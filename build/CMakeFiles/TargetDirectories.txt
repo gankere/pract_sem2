@@ -1,5 +1,0 @@
-C:/Users/gankere/TPU_Workspace/sem4/pract/build/CMakeFiles/PodcastUI.dir
-C:/Users/gankere/TPU_Workspace/sem4/pract/build/CMakeFiles/edit_cache.dir
-C:/Users/gankere/TPU_Workspace/sem4/pract/build/CMakeFiles/rebuild_cache.dir
-C:/Users/gankere/TPU_Workspace/sem4/pract/build/CMakeFiles/PodcastUI_autogen_timestamp_deps.dir
-C:/Users/gankere/TPU_Workspace/sem4/pract/build/CMakeFiles/PodcastUI_autogen.dir
