@@ -8,13 +8,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Test)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia)
 qt_standard_project_setup()
 
-# === Основное приложение ===
 qt_add_executable(PodcastUI
     main.cpp
     mainwindow.h mainwindow.cpp
 )
 
-target_link_libraries(PodcastUI PRIVATE Qt6::Widgets)
+target_link_libraries(PodcastUI PRIVATE Qt6::Widgets Qt6::Multimedia)
