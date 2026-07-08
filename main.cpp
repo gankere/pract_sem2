@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.setWindowTitle("Мини-подкаст с живым участием");
-    w.resize(1000, 720);
+    w.resize(1200, 720);
     w.show();
 
     return app.exec();
