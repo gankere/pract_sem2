@@ -201,6 +201,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/pthread_signal.h \
   C:/msys64/mingw64/include/pthread_time.h \
   C:/msys64/mingw64/include/pthread_unistd.h \
+  C:/msys64/mingw64/include/qt6/QtCore/QSettings \
   C:/msys64/mingw64/include/qt6/QtCore/q17memory.h \
   C:/msys64/mingw64/include/qt6/QtCore/q20bit.h \
   C:/msys64/mingw64/include/qt6/QtCore/q20functional.h \
@@ -281,6 +282,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtCore/qscopedpointer.h \
   C:/msys64/mingw64/include/qt6/QtCore/qscopeguard.h \
   C:/msys64/mingw64/include/qt6/QtCore/qset.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qsettings.h \
   C:/msys64/mingw64/include/qt6/QtCore/qshareddata.h \
   C:/msys64/mingw64/include/qt6/QtCore/qshareddata_impl.h \
   C:/msys64/mingw64/include/qt6/QtCore/qsharedpointer.h \
@@ -356,7 +358,10 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h \
   C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow \
+  C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton \
+  C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h \
+  C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/qtabwidget.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgets-config.h \
@@ -376,24 +381,11 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/sys/timeb.h \
   C:/msys64/mingw64/include/sys/types.h \
   C:/msys64/mingw64/include/time.h \
+  C:/msys64/mingw64/include/vadefs.h \
   C:/msys64/mingw64/include/wchar.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stdarg___gnuc_va_list.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stdarg___va_copy.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stdarg_header_macro.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_arg.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_copy.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_list.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stddef_header_macro.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stddef_max_align_t.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stddef_null.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stddef_nullptr_t.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stddef_offsetof.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stddef_ptrdiff_t.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stddef_size_t.h \
-  C:/msys64/mingw64/lib/clang/22/include/__stddef_wchar_t.h \
-  C:/msys64/mingw64/lib/clang/22/include/limits.h \
-  C:/msys64/mingw64/lib/clang/22/include/stdarg.h \
-  C:/msys64/mingw64/lib/clang/22/include/stdbool.h \
-  C:/msys64/mingw64/lib/clang/22/include/stddef.h \
-  C:/msys64/mingw64/lib/clang/22/include/stdint.h \
-  C:/msys64/mingw64/lib/clang/22/include/vadefs.h
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/limits.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdarg.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdbool.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stddef.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdint.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/syslimits.h

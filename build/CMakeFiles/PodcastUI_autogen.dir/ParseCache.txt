@@ -204,6 +204,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/pthread_signal.h
  mdp:C:/msys64/mingw64/include/pthread_time.h
  mdp:C:/msys64/mingw64/include/pthread_unistd.h
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/QSettings
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q17memory.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q20bit.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q20functional.h
@@ -284,6 +285,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qscopedpointer.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qscopeguard.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qset.h
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/qsettings.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qshareddata.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qshareddata_impl.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qsharedpointer.h
@@ -359,7 +361,10 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtabwidget.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgets-config.h
@@ -379,26 +384,13 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/sys/timeb.h
  mdp:C:/msys64/mingw64/include/sys/types.h
  mdp:C:/msys64/mingw64/include/time.h
+ mdp:C:/msys64/mingw64/include/vadefs.h
  mdp:C:/msys64/mingw64/include/wchar.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stdarg___gnuc_va_list.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stdarg___va_copy.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stdarg_header_macro.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_arg.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_copy.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_list.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stddef_header_macro.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stddef_max_align_t.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stddef_null.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stddef_nullptr_t.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stddef_offsetof.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stddef_ptrdiff_t.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stddef_size_t.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/__stddef_wchar_t.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/limits.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/stdarg.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/stdbool.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/stddef.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/stdint.h
- mdp:C:/msys64/mingw64/lib/clang/22/include/vadefs.h
+ mdp:C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/limits.h
+ mdp:C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdarg.h
+ mdp:C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdbool.h
+ mdp:C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stddef.h
+ mdp:C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdint.h
+ mdp:C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/syslimits.h
 C:/Users/gankere/TPU_Workspace/sem4/pract/main.cpp
 C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.cpp

@@ -14,8 +14,7 @@ PodcastUI_autogen/timestamp: \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CheckIncludeFileCXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CheckLibraryExists.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Clang-CXX.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Clang.cmake \
+	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/GNU-CXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/GNU.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/FindPackageHandleStandardArgs.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/FindPackageMessage.cmake \
@@ -32,9 +31,8 @@ PodcastUI_autogen/timestamp: \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Linker/GNU.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Linker/Windows-GNU-CXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Linker/Windows-GNU.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-Clang-CXX.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-Clang.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-GNU-CXX-ABI.cmake \
+	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-GNU-CXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-GNU.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-Initialize.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-windres.cmake \
@@ -249,6 +247,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/pthread_signal.h \
 	C:/msys64/mingw64/include/pthread_time.h \
 	C:/msys64/mingw64/include/pthread_unistd.h \
+	C:/msys64/mingw64/include/qt6/QtCore/QSettings \
 	C:/msys64/mingw64/include/qt6/QtCore/q17memory.h \
 	C:/msys64/mingw64/include/qt6/QtCore/q20bit.h \
 	C:/msys64/mingw64/include/qt6/QtCore/q20functional.h \
@@ -329,6 +328,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtCore/qscopedpointer.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qscopeguard.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qset.h \
+	C:/msys64/mingw64/include/qt6/QtCore/qsettings.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qshareddata.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qshareddata_impl.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qsharedpointer.h \
@@ -404,7 +404,10 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow \
+	C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qtabwidget.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgets-config.h \
@@ -424,27 +427,8 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/sys/timeb.h \
 	C:/msys64/mingw64/include/sys/types.h \
 	C:/msys64/mingw64/include/time.h \
+	C:/msys64/mingw64/include/vadefs.h \
 	C:/msys64/mingw64/include/wchar.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stdarg___gnuc_va_list.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stdarg___va_copy.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stdarg_header_macro.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_arg.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_copy.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stdarg_va_list.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stddef_header_macro.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stddef_max_align_t.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stddef_null.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stddef_nullptr_t.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stddef_offsetof.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stddef_ptrdiff_t.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stddef_size_t.h \
-	C:/msys64/mingw64/lib/clang/22/include/__stddef_wchar_t.h \
-	C:/msys64/mingw64/lib/clang/22/include/limits.h \
-	C:/msys64/mingw64/lib/clang/22/include/stdarg.h \
-	C:/msys64/mingw64/lib/clang/22/include/stdbool.h \
-	C:/msys64/mingw64/lib/clang/22/include/stddef.h \
-	C:/msys64/mingw64/lib/clang/22/include/stdint.h \
-	C:/msys64/mingw64/lib/clang/22/include/vadefs.h \
 	C:/msys64/mingw64/lib/cmake/Qt6/FindWrapAtomic.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6/FindWrapVulkanHeaders.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6/Qt6Config.cmake \
@@ -491,6 +475,15 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/lib/cmake/Qt6/QtPublicToolHelpers.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6/QtPublicWalkLibsHelpers.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6/QtPublicWindowsHelpers.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentConfigVersion.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentConfigVersionImpl.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentDependencies.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentTargetsPrecheck.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Concurrent/Qt6ConcurrentVersionlessAliasTargets.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6Core/Qt6CoreAdditionalTargetInfo.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6Core/Qt6CoreConfig.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6Core/Qt6CoreConfigExtras.cmake \
@@ -589,16 +582,57 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargetsPrecheck.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6GuiTools/Qt6GuiToolsVersionlessTargets.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestAdditionalTargetInfo.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestConfig.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestConfigVersion.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestConfigVersionImpl.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestDependencies.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestTargets-relwithdebinfo.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestTargets.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestTargetsPrecheck.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/Qt6TestVersionlessAliasTargets.cmake \
-	C:/msys64/mingw64/lib/cmake/Qt6Test/QtTestProperties.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfigVersion.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfigVersionImpl.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaDependencies.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaMacros.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaPlugins.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargetsPrecheck.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6MultimediaVersionlessAliasTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargetsPrecheck.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkConfigVersion.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkDependencies.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkPlugins.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkTargetsPrecheck.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6NetworkVersionlessAliasTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QGlibNetworkInformationPluginAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QGlibNetworkInformationPluginConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QGlibNetworkInformationPluginTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QGlibNetworkInformationPluginTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QGlibNetworkInformationPluginTargetsPrecheck.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QNLMNIPluginAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QNLMNIPluginConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargetsPrecheck.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargetsPrecheck.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargetsPrecheck.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginAdditionalTargetInfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginConfig.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets-relwithdebinfo.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets.cmake \
+	C:/msys64/mingw64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargetsPrecheck.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginAdditionalTargetInfo.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginConfig.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginTargets-relwithdebinfo.cmake \
@@ -624,4 +658,10 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargetsPrecheck.cmake \
 	C:/msys64/mingw64/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsVersionlessTargets.cmake \
+	C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/limits.h \
+	C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdarg.h \
+	C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdbool.h \
+	C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stddef.h \
+	C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/stdint.h \
+	C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/16.1.0/include/syslimits.h \
 	C:/Program\ Files/CMake/bin/cmake.exe
