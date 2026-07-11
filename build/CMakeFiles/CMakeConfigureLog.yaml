@@ -5062,3 +5062,14 @@ events:
         - "C:/msys64/mingw64/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules"
         - "C:/msys64/mingw64/lib/cmake/Qt6/3rdparty/kwin"
 ...
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The system is: Windows - 10.0.26200 - AMD64
+...

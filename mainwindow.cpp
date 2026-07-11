@@ -15,16 +15,8 @@
 #include <QSlider>
 #include <QDebug>
 #include <QSettings>
-#include <QToolButton>
-#include <QDialog>
-#include <QMenu>
-#include <QWidgetAction>
-#include <QMediaDevices>
-#include <QAudioDevice>
-#include <QComboBox>
-#include <QSlider>
-#include <QDebug>
-#include <QSettings>
+#include <QTimer>
+#include <QtMath>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -32,9 +24,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     settings = new QSettings("PodcastApp", "MiniPodcast", this);
     loadSettings();
 
-    // Инициализация настроек
-    settings = new QSettings("PodcastApp", "MiniPodcast", this);
-    loadSettings();
+    // Инициализация аудио
+    audioSource = nullptr;
+    audioDevice = nullptr;
+    activeHostTile = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -47,12 +40,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto *topBar = new QFrame;
     topBar->setFixedHeight(48);
     topBar->setStyleSheet("QFrame { background-color: #0D0D0D; }");
-    topBar->setStyleSheet("QFrame { background-color: #0D0D0D; }");
     auto *topLay = new QHBoxLayout(topBar);
     topLay->setContentsMargins(16, 0, 16, 0);
 
     auto *meetingName = new QLabel("Мини-подкаст: <название подкаста>");
-    meetingName->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 14px; }");
     meetingName->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 14px; }");
     topLay->addWidget(meetingName);
 
@@ -60,11 +51,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     auto *timer = new QLabel("<длительность подкаста>");
     timer->setStyleSheet("QLabel { color: #8A8A8A; font-family: Consolas; font-size: 14px; }");
-    timer->setStyleSheet("QLabel { color: #8A8A8A; font-family: Consolas; font-size: 14px; }");
     topLay->addWidget(timer);
 
     auto *encryption = new QLabel("🔒");
-    encryption->setStyleSheet("QLabel { color: #8A8A8A; margin-left: 12px; }");
     encryption->setStyleSheet("QLabel { color: #8A8A8A; margin-left: 12px; }");
     topLay->addWidget(encryption);
 
@@ -75,13 +64,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         "QPushButton { background-color: #1A1A1A; color: #E8E8E8; "
         "border-radius: 10px; font-size: 16px; }"
         "QPushButton:hover { background-color: #252525; }");
-        "QPushButton { background-color: #1A1A1A; color: #E8E8E8; "
-        "border-radius: 10px; font-size: 16px; }"
-        "QPushButton:hover { background-color: #252525; }");
     settingsBtn->setToolTip("Настройки");
     topLay->addWidget(settingsBtn);
-
-    connect(settingsBtn, &QPushButton::clicked, this, &MainWindow::openSettings);
 
     connect(settingsBtn, &QPushButton::clicked, this, &MainWindow::openSettings);
 
@@ -96,14 +80,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // --- Сетка участников ---
     auto *stage = new QFrame;
     stage->setStyleSheet("QFrame { background-color: #0A0A0A; }");
-    stage->setStyleSheet("QFrame { background-color: #0A0A0A; }");
     auto *stageLay = new QVBoxLayout(stage);
     stageLay->setContentsMargins(16, 16, 16, 16);
     stageLay->setSpacing(16);
 
     // Ведущие
     auto *hostsLabel = new QLabel("ВЕДУЩИЕ В ЭФИРЕ");
-    hostsLabel->setStyleSheet("QLabel { color: #6B6B6B; font-size: 11px; font-weight: bold; }");
     hostsLabel->setStyleSheet("QLabel { color: #6B6B6B; font-size: 11px; font-weight: bold; }");
     stageLay->addWidget(hostsLabel);
 
@@ -112,13 +94,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     for (int i = 0; i < 2; ++i) {
         auto *tile = new QFrame;
         tile->setMinimumHeight(220);
-        tile->setStyleSheet("QFrame { background-color: #141414; border-radius: 10px; }");
-        tile->setStyleSheet("QFrame { background-color: #141414; border-radius: 10px; }");
+        
+        tile->setObjectName("hostTile");
+        tile->setStyleSheet(
+            "#hostTile { "
+            "   background-color: #141414; "
+            "   border: 3px solid transparent; "
+            "   border-radius: 10px; "
+            "}"
+        );
+    
+        if (i == 0) {
+            activeHostTile = tile;
+        }
+        
         auto *tl = new QVBoxLayout(tile);
         tl->setContentsMargins(0, 0, 0, 0);
         tl->setSpacing(0);
 
         auto *centerWidget = new QWidget;
+        centerWidget->setStyleSheet("background-color: transparent;");
         auto *centerLay = new QVBoxLayout(centerWidget);
         centerLay->setContentsMargins(0, 0, 0, 0);
         centerLay->setSpacing(8);
@@ -127,27 +122,30 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         avatar->setFixedSize(100, 100);
         avatar->setAlignment(Qt::AlignCenter);
         avatar->setStyleSheet(
-            "QLabel { background-color: #B5656B; color: #E8E8E8; "
-            "QLabel { background-color: #B5656B; color: #E8E8E8; "
-            "border-radius: 50px; font-size: 36px; font-weight: bold; }");
+            "QLabel { "
+            "   background-color: #B5656B; "
+            "   color: #E8E8E8; "
+            "   border-radius: 50px; "
+            "   font-size: 36px; "
+            "   font-weight: bold; "
+            "}");
         centerLay->addWidget(avatar, 0, Qt::AlignHCenter);
         auto *name = new QLabel(i == 0 ? "Анна" : "Анастасия");
         name->setAlignment(Qt::AlignCenter);
-        name->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 16px; }");
-        name->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 16px; }");
+        name->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 16px; background-color: transparent; }");
         centerLay->addWidget(name);
         centerLay->addStretch(1);
         
         tl->addWidget(centerWidget, 1);
 
         auto *statusWidget = new QWidget;
+        statusWidget->setStyleSheet("background-color: transparent;");
         auto *statusLay = new QHBoxLayout(statusWidget);
         statusLay->setContentsMargins(0, 8, 12, 12);
         statusLay->setSpacing(6);
         statusLay->addStretch(1);
         if (i == 1) {
             auto *micIcon = new QLabel("🔇");
-            micIcon->setStyleSheet("QLabel { color: #C96969; font-size: 16px; }");
             micIcon->setStyleSheet("QLabel { color: #C96969; font-size: 16px; }");
             statusLay->addWidget(micIcon);
         }
@@ -160,7 +158,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // Слушатели
     auto *listenersLabel = new QLabel("СЛУШАТЕЛИ (5/6)");
     listenersLabel->setStyleSheet("QLabel { color: #6B6B6B; font-size: 11px; font-weight: bold; }");
-    listenersLabel->setStyleSheet("QLabel { color: #6B6B6B; font-size: 11px; font-weight: bold; }");
     stageLay->addWidget(listenersLabel);
 
     auto *listenersGrid = new QGridLayout;
@@ -168,7 +165,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     for (int i = 0; i < 6; ++i) {
         auto *tile = new QFrame;
         tile->setMinimumHeight(100);
-        tile->setStyleSheet("QFrame { background-color: #141414; border-radius: 10px; }");
         tile->setStyleSheet("QFrame { background-color: #141414; border-radius: 10px; }");
         auto *tl = new QVBoxLayout(tile);
         tl->setContentsMargins(10, 10, 10, 10);
@@ -180,14 +176,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         avatar->setAlignment(Qt::AlignCenter);
         avatar->setStyleSheet(
             "QLabel { background-color: #B5656B; color: #E8E8E8; border-radius: 18px; font-weight: bold; }");
-            "QLabel { background-color: #B5656B; color: #E8E8E8; border-radius: 18px; font-weight: bold; }");
         tl->addWidget(avatar, 0, Qt::AlignHCenter);
 
         auto *name = new QLabel(i < 5 ? QString("Слушатель %1").arg(i + 1) : "");
         name->setAlignment(Qt::AlignCenter);
         name->setStyleSheet(
             QString("QLabel { color: %1; font-size: 12px; }")
-                .arg(i < 5 ? "#E8E8E8" : "#5A5A5A"));
                 .arg(i < 5 ? "#E8E8E8" : "#5A5A5A"));
         tl->addWidget(name);
 
@@ -201,7 +195,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto *chat = new QFrame;
     chat->setFixedWidth(300);
     chat->setStyleSheet("QFrame { background-color: #141414; }");
-    chat->setStyleSheet("QFrame { background-color: #141414; }");
     auto *chatLay = new QVBoxLayout(chat);
     chatLay->setContentsMargins(10, 10, 10, 10);
     chatLay->setSpacing(8);
@@ -209,21 +202,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto *chatHeader = new QHBoxLayout;
     auto *chatTitle = new QLabel("💬 Чат");
     chatTitle->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; }");
-    chatTitle->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; }");
     chatHeader->addWidget(chatTitle);
     chatHeader->addStretch(1);
     auto *closeChat = new QLabel("✕");
-    closeChat->setStyleSheet("QLabel { color: #8A8A8A; }");
     closeChat->setStyleSheet("QLabel { color: #8A8A8A; }");
     chatHeader->addWidget(closeChat);
     chatLay->addLayout(chatHeader);
 
     auto *chatBody = new QFrame;
     chatBody->setStyleSheet("QFrame { background-color: #0A0A0A; border-radius: 10px; }");
-    chatBody->setStyleSheet("QFrame { background-color: #0A0A0A; border-radius: 10px; }");
     auto *chatBodyLay = new QVBoxLayout(chatBody);
     auto *chatPlaceholder = new QLabel("(список вопросов)");
-    chatPlaceholder->setStyleSheet("QLabel { color: #6B6B6B; }");
     chatPlaceholder->setStyleSheet("QLabel { color: #6B6B6B; }");
     chatBodyLay->addWidget(chatPlaceholder);
     chatBodyLay->addStretch(1);
@@ -232,10 +221,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto *chatInput = new QFrame;
     chatInput->setFixedHeight(40);
     chatInput->setStyleSheet("QFrame { background-color: #1A1A1A; border-radius: 10px; }");
-    chatInput->setStyleSheet("QFrame { background-color: #1A1A1A; border-radius: 10px; }");
     auto *chatInputLay = new QHBoxLayout(chatInput);
     auto *chatInputText = new QLabel("Задайте вопрос...");
-    chatInputText->setStyleSheet("QLabel { color: #5A5A5A; }");
     chatInputText->setStyleSheet("QLabel { color: #5A5A5A; }");
     chatInputLay->addWidget(chatInputText);
     chatLay->addWidget(chatInput);
@@ -247,26 +234,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto *bottomBar = new QFrame;
     bottomBar->setFixedHeight(70);
     bottomBar->setStyleSheet("QFrame { background-color: #111111; }");
-    bottomBar->setFixedHeight(70);
-    bottomBar->setStyleSheet("QFrame { background-color: #111111; }");
     auto *bottomLay = new QHBoxLayout(bottomBar);
     bottomLay->setContentsMargins(20, 10, 20, 10);
-    bottomLay->setSpacing(16);
     bottomLay->setSpacing(16);
 
     // Функция создания кнопки с выпадающим меню
     auto createAudioButtonWithMenu = [this](const QString &icon, const QString &text, 
                                              bool isInput, QWidget *parent) {
         auto *container = new QWidget;
-        container->setFixedSize(90, 42);
-        container->setStyleSheet(
-            "QWidget { "
-            "   background-color: #1A1A1A; "
-            "   border-radius: 10px; "
-            "}"
-        );
-        
-        auto *lay = new QHBoxLayout(container);
         container->setFixedSize(90, 42);
         container->setStyleSheet(
             "QWidget { "
@@ -503,12 +478,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     bottomLay->addWidget(createAudioButtonWithMenu("🎙️", "", true, this));
     bottomLay->addWidget(createAudioButtonWithMenu("🔊", "", false, this));
-    bottomLay->addWidget(createAudioButtonWithMenu("🎙️", "", true, this));
-    bottomLay->addWidget(createAudioButtonWithMenu("🔊", "", false, this));
 
     bottomLay->addStretch(1);
 
-    // Кнопка "Выйти"
     // Кнопка "Выйти"
     auto *leaveContainer = new QWidget;
     auto *leaveLay = new QVBoxLayout(leaveContainer);
@@ -521,9 +493,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         "QPushButton { background-color: #B5656B; color: #E8E8E8; "
         "border-radius: 10px; font-weight: bold; font-size: 13px; }"
         "QPushButton:hover { background-color: #C96969; }");
-        "QPushButton { background-color: #B5656B; color: #E8E8E8; "
-        "border-radius: 10px; font-weight: bold; font-size: 13px; }"
-        "QPushButton:hover { background-color: #C96969; }");
     leaveLay->addWidget(leaveBtn, 0, Qt::AlignHCenter);
 
     bottomLay->addWidget(leaveContainer);
@@ -532,32 +501,110 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     setCentralWidget(central);
     resize(1100, 750);
+    initMicrophone();
 }
 
 MainWindow::~MainWindow()
 {
+    if (audioSource) {
+        audioSource->stop();
+    }
     saveSettings();
 }
 
-void MainWindow::loadSettings()
+// Инициализация микрофона и подсветка рамки ведущего при говорении
+void MainWindow::initMicrophone()
 {
-    qDebug() << "Загрузка настроек...";
-}
+    // Получаем дефолтное устройство ввода
+    QAudioDevice device = QMediaDevices::defaultAudioInput();
+    if (device.isNull()) {
+        qDebug() << "❌ Микрофон не найден!";
+        return;
+    }
+    
+    qDebug() << "✅ Используем микрофон:" << device.description();
 
-void MainWindow::saveSettings()
-{
-    settings->sync();
-    qDebug() << "Настройки сохранены";
-}
+    //формат аудио
+    QAudioFormat format;
+    format.setSampleRate(16000);
+    format.setChannelCount(1);
+    format.setSampleFormat(QAudioFormat::Int16);
 
-void MainWindow::openSettings()
-{
-    qDebug() << "Открытие настроек...";
-}
+    if (!device.isFormatSupported(format)) {
+        qDebug() << "⚠️ Формат не поддерживается, используем дефолтный";
+        format = device.preferredFormat();
+    }
 
-MainWindow::~MainWindow()
-{
-    saveSettings();
+    // Создаём источник звука
+    audioSource = new QAudioSource(device, format, this);
+    audioDevice = audioSource->start();
+    if (!audioDevice) {
+        qDebug() << "❌ Не удалось запустить захват звука!";
+        return;
+    }
+
+    qDebug() << "🎙️ Микрофон запущен. Слушаем звук...";
+
+    const int SPEAK_THRESHOLD = 15;   // уровень включения подсветки
+    const int SILENT_THRESHOLD = 5;   // уровень выключения подсветки
+    
+    bool isSpeaking = false;  // текущее состояние: говорит / молчит
+
+    // Таймер для периодического чтения данных и обновления рамки
+    QTimer *vuTimer = new QTimer(this);
+    connect(vuTimer, &QTimer::timeout, this, [this, SPEAK_THRESHOLD, SILENT_THRESHOLD, &isSpeaking]() {
+        if (!audioDevice || !audioDevice->bytesAvailable()) {
+
+            if (isSpeaking && activeHostTile) {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { "
+                    "   background-color: #141414; "
+                    "   border: 3px solid transparent; "
+                    "   border-radius: 10px; "
+                    "}");
+                isSpeaking = false;
+            }
+            return;
+        }
+
+        QByteArray data = audioDevice->readAll();
+        
+        // Считаем уровень звука (среднеквадратичное значение)
+        const qint16 *samples = reinterpret_cast<const qint16*>(data.constData());
+        int sampleCount = data.size() / sizeof(qint16);
+        
+        if (sampleCount == 0) return;
+        double sumSquares = 0;
+        for (int i = 0; i < sampleCount; ++i) {
+            double s = samples[i];
+            sumSquares += s * s;
+        }
+        double rms = qSqrt(sumSquares / sampleCount);
+        
+        int level = qMin(100, static_cast<int>(rms / 327.68));
+        
+        if (activeHostTile) {
+            if (!isSpeaking && level > SPEAK_THRESHOLD) {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { "
+                    "   background-color: #141414; "
+                    "   border: 3px solid #50C878; "
+                    "   border-radius: 10px; "
+                    "}");
+                isSpeaking = true;
+            } else if (isSpeaking && level < SILENT_THRESHOLD) {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { "
+                    "   background-color: #141414; "
+                    "   border: 3px solid transparent; "
+                    "   border-radius: 10px; "
+                    "}");
+                isSpeaking = false;
+            }
+        }
+    });
+    
+    vuTimer->start(50); // Обновляем каждые 50 мс (20 раз в секунду)
 }
 
 void MainWindow::loadSettings()

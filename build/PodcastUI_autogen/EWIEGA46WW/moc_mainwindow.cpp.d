@@ -201,6 +201,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/pthread_signal.h \
   C:/msys64/mingw64/include/pthread_time.h \
   C:/msys64/mingw64/include/pthread_unistd.h \
+  C:/msys64/mingw64/include/qt6/QtCore/QIODevice \
   C:/msys64/mingw64/include/qt6/QtCore/QSettings \
   C:/msys64/mingw64/include/qt6/QtCore/q17memory.h \
   C:/msys64/mingw64/include/qt6/QtCore/q20bit.h \
@@ -253,6 +254,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtCore/qglobalstatic.h \
   C:/msys64/mingw64/include/qt6/QtCore/qhash.h \
   C:/msys64/mingw64/include/qt6/QtCore/qhashfunctions.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qiodevice.h \
   C:/msys64/mingw64/include/qt6/QtCore/qiodevicebase.h \
   C:/msys64/mingw64/include/qt6/QtCore/qiterable.h \
   C:/msys64/mingw64/include/qt6/QtCore/qiterator.h \
@@ -357,9 +359,20 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtGui/qtransform.h \
   C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h \
   C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioSource \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudio.h \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiodevice.h \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudioformat.h \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiosource.h \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/qtaudio.h \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimedia-config.h \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaexports.h \
+  C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaglobal.h \
+  C:/msys64/mingw64/include/qt6/QtWidgets/QFrame \
   C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow \
   C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton \
   C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h \
+  C:/msys64/mingw64/include/qt6/QtWidgets/qframe.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h \
   C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h \

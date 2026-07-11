@@ -204,6 +204,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/pthread_signal.h
  mdp:C:/msys64/mingw64/include/pthread_time.h
  mdp:C:/msys64/mingw64/include/pthread_unistd.h
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/QIODevice
  mdp:C:/msys64/mingw64/include/qt6/QtCore/QSettings
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q17memory.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q20bit.h
@@ -256,6 +257,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qglobalstatic.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qhash.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qhashfunctions.h
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/qiodevice.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qiodevicebase.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qiterable.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qiterator.h
@@ -360,9 +362,20 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qtransform.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioSource
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qaudio.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiodevice.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qaudioformat.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiosource.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtaudio.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimedia-config.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaexports.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaglobal.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QFrame
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qframe.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h

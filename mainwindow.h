@@ -2,6 +2,9 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QSettings>
+#include <QAudioSource>
+#include <QIODevice>
+#include <QFrame>
 
 class MainWindow : public QMainWindow
 {
@@ -16,6 +19,13 @@ private slots:
 private:
     QPushButton *settingsBtn;
     QSettings *settings;
+    
+    // Аудио
+    QAudioSource *audioSource;
+    QIODevice *audioDevice;
+    QFrame *activeHostTile;
+    
     void loadSettings();
     void saveSettings();
+    void initMicrophone();
 };
