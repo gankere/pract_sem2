@@ -204,32 +204,61 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     chatTitle->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; }");
     chatHeader->addWidget(chatTitle);
     chatHeader->addStretch(1);
-    auto *closeChat = new QLabel("✕");
-    closeChat->setStyleSheet("QLabel { color: #8A8A8A; }");
-    chatHeader->addWidget(closeChat);
     chatLay->addLayout(chatHeader);
 
-    auto *chatBody = new QFrame;
-    chatBody->setStyleSheet("QFrame { background-color: #0A0A0A; border-radius: 10px; }");
-    auto *chatBodyLay = new QVBoxLayout(chatBody);
-    auto *chatPlaceholder = new QLabel("(список вопросов)");
-    chatPlaceholder->setStyleSheet("QLabel { color: #6B6B6B; }");
-    chatBodyLay->addWidget(chatPlaceholder);
-    chatBodyLay->addStretch(1);
-    chatLay->addWidget(chatBody, 1);
+    // Область сообщений
+    chatDisplay = new QTextEdit;
+    chatDisplay->setReadOnly(true);
+    chatDisplay->setStyleSheet(
+        "QTextEdit { "
+        "   background-color: #0A0A0A; "
+        "   color: #E8E8E8; "
+        "   border: none; "
+        "   border-radius: 10px; "
+        "   font-size: 13px; "
+        "   padding: 8px; "
+        "} "
+        "QTextEdit::selection { background-color: #B5656B; }"
+    );
+    chatDisplay->setPlaceholderText("Сообщения появятся здесь...");
+    chatLay->addWidget(chatDisplay, 1);
 
-    auto *chatInput = new QFrame;
-    chatInput->setFixedHeight(40);
-    chatInput->setStyleSheet("QFrame { background-color: #1A1A1A; border-radius: 10px; }");
-    auto *chatInputLay = new QHBoxLayout(chatInput);
-    auto *chatInputText = new QLabel("Задайте вопрос...");
-    chatInputText->setStyleSheet("QLabel { color: #5A5A5A; }");
-    chatInputLay->addWidget(chatInputText);
-    chatLay->addWidget(chatInput);
+    // Поле ввода
+    auto *inputFrame = new QFrame;
+    inputFrame->setFixedHeight(40);
+    inputFrame->setStyleSheet("QFrame { background-color: #1A1A1A; border-radius: 10px; }");
+    auto *inputLay = new QHBoxLayout(inputFrame);
+    inputLay->setContentsMargins(8, 4, 8, 4);
+    inputLay->setSpacing(8);
+
+    chatInput = new QLineEdit;
+    chatInput->setPlaceholderText("Задайте вопрос...");
+    chatInput->setStyleSheet(
+        "QLineEdit { "
+        "   background-color: transparent; "
+        "   color: #E8E8E8; "
+        "   border: none; "
+        "   font-size: 13px; "
+        "} "
+        "QLineEdit::placeholder { color: #5A5A5A; }"
+    );
+    inputLay->addWidget(chatInput, 1);
+
+    auto *sendBtn = new QPushButton("➤");
+    sendBtn->setFixedSize(32, 32);
+    sendBtn->setStyleSheet(
+        "QPushButton { background-color: #B5656B; color: #E8E8E8; border-radius: 16px; font-weight: bold; }"
+        "QPushButton:hover { background-color: #C96969; }"
+    );
+    inputLay->addWidget(sendBtn);
+    chatLay->addWidget(inputFrame);
+
+    // Подключения
+    connect(sendBtn, &QPushButton::clicked, this, &MainWindow::sendMessage);
+    connect(chatInput, &QLineEdit::returnPressed, this, &MainWindow::sendMessage);
 
     middleLay->addWidget(chat);
     root->addWidget(middle, 1);
-
     // === НИЖНЯЯ ПАНЕЛЬ УПРАВЛЕНИЯ ===
     auto *bottomBar = new QFrame;
     bottomBar->setFixedHeight(70);
@@ -621,4 +650,40 @@ void MainWindow::saveSettings()
 void MainWindow::openSettings()
 {
     qDebug() << "Открытие настроек...";
+}
+
+void MainWindow::sendMessage()
+{
+    QString text = chatInput->text().trimmed();
+    if (text.isEmpty()) return;
+
+    ChatMessage msg;
+    msg.sender = "Вы";
+    msg.text = text;
+    msg.isLocal = true;
+
+    addMessageToChat(msg);
+    chatInput->clear();
+
+    qDebug() << "[CHAT] Отправлено:" << text;
+}
+
+void MainWindow::onMessageReceived(const ChatMessage &msg)
+{
+    addMessageToChat(msg);
+    qDebug() << "[CHAT] Получено от" << msg.sender << ":" << msg.text;
+}
+
+void MainWindow::addMessageToChat(const ChatMessage &msg)
+{
+    QString color = msg.isLocal ? "#B5656B" : "#50C878";
+    
+    QString html = QString(
+        "<div style='margin-bottom: 8px; line-height: 1.4;'>"
+        "<span style='color: %1; font-weight: bold;'>%2:</span> "
+        "<span style='color: #E8E8E8;'>%3</span>"
+        "</div>"
+    ).arg(color, msg.sender, msg.text);
+
+    chatDisplay->append(html);
 }

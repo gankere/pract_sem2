@@ -206,6 +206,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/pthread_unistd.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/QIODevice
  mdp:C:/msys64/mingw64/include/qt6/QtCore/QSettings
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/QString
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q17memory.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q20bit.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q20functional.h
@@ -330,6 +331,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qtversionchecks.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qtypeinfo.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qtypes.h
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/qurl.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qutf8stringview.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qvariant.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qvarlengtharray.h
@@ -350,12 +352,17 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qkeysequence.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qpaintdevice.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qpalette.h
+ mdp:C:/msys64/mingw64/include/qt6/QtGui/qpen.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qpixelformat.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qpixmap.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qpolygon.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qregion.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qrgb.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qrgba64.h
+ mdp:C:/msys64/mingw64/include/qt6/QtGui/qtextcursor.h
+ mdp:C:/msys64/mingw64/include/qt6/QtGui/qtextdocument.h
+ mdp:C:/msys64/mingw64/include/qt6/QtGui/qtextformat.h
+ mdp:C:/msys64/mingw64/include/qt6/QtGui/qtextoption.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qtgui-config.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qtguiexports.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qtguiglobal.h
@@ -372,14 +379,19 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaexports.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaglobal.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QFrame
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QLineEdit
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QTextEdit
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractscrollarea.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qframe.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qlineedit.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtabwidget.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtextedit.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgets-config.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgetsexports.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgetsglobal.h

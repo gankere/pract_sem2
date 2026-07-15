@@ -5,6 +5,15 @@
 #include <QAudioSource>
 #include <QIODevice>
 #include <QFrame>
+#include <QTextEdit>
+#include <QLineEdit>
+#include <QString>
+
+struct ChatMessage {
+    QString sender;      // кто отправил
+    QString text;        // текст
+    bool isLocal;        // true = я отправил, false = от сервера
+};
 
 class MainWindow : public QMainWindow
 {
@@ -15,6 +24,8 @@ public:
 
 private slots:
     void openSettings();
+    void sendMessage();
+    void onMessageReceived(const ChatMessage &msg);
 
 private:
     QPushButton *settingsBtn;
@@ -24,8 +35,13 @@ private:
     QAudioSource *audioSource;
     QIODevice *audioDevice;
     QFrame *activeHostTile;
+
+    // Чат
+    QTextEdit *chatDisplay;
+    QLineEdit *chatInput;
     
     void loadSettings();
     void saveSettings();
     void initMicrophone();
+    void addMessageToChat(const ChatMessage &msg);
 };
