@@ -34,6 +34,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     vuTimer = nullptr;
     audioSink = nullptr;
     audioOutputDevice = nullptr;
+    listenerCount = 0;
+    listenersListWidget = nullptr;
+    listenersListLayout = nullptr;
+    listenersCountLabel = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -88,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     stage->setStyleSheet("QFrame { background-color: #0A0A0A; }");
     auto *stageLay = new QVBoxLayout(stage);
     stageLay->setContentsMargins(16, 16, 16, 16);
-    stageLay->setSpacing(16);
+    stageLay->setSpacing(10);
 
     // Ведущие
     auto *hostsLabel = new QLabel("ВЕДУЩИЕ В ЭФИРЕ");
@@ -162,40 +166,30 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     stageLay->addLayout(hostsGrid);
 
     // Слушатели
-    auto *listenersLabel = new QLabel("СЛУШАТЕЛИ (5/6)");
-    listenersLabel->setStyleSheet("QLabel { color: #6B6B6B; font-size: 11px; font-weight: bold; }");
-    stageLay->addWidget(listenersLabel);
+    auto *separator = new QFrame;
+    separator->setFixedHeight(1);
+    separator->setStyleSheet("QFrame { background-color: #1F1F1F; margin-top: 4px; margin-bottom: 12px; }");
+    stageLay->addWidget(separator);
 
-    auto *listenersGrid = new QGridLayout;
-    listenersGrid->setSpacing(8);
-    for (int i = 0; i < 6; ++i) {
-        auto *tile = new QFrame;
-        tile->setMinimumHeight(100);
-        tile->setStyleSheet("QFrame { background-color: #141414; border-radius: 10px; }");
-        auto *tl = new QVBoxLayout(tile);
-        tl->setContentsMargins(10, 10, 10, 10);
-        tl->setSpacing(8);
-        tl->addSpacing(12);
+    listenersCountLabel = new QLabel("СЛУШАТЕЛИ (0/6)");
+    listenersCountLabel->setStyleSheet("QLabel { color: #6B6B6B; font-size: 11px; font-weight: bold; letter-spacing: 0.5px; }");
+    stageLay->addWidget(listenersCountLabel);
 
-        auto *avatar = new QLabel(i < 5 ? QString::number(i + 1) : "+");
-        avatar->setFixedSize(36, 36);
-        avatar->setAlignment(Qt::AlignCenter);
-        avatar->setStyleSheet(
-            "QLabel { background-color: #B5656B; color: #E8E8E8; border-radius: 18px; font-weight: bold; }");
-        tl->addWidget(avatar, 0, Qt::AlignHCenter);
-
-        auto *name = new QLabel(i < 5 ? QString("Слушатель %1").arg(i + 1) : "");
-        name->setAlignment(Qt::AlignCenter);
-        name->setStyleSheet(
-            QString("QLabel { color: %1; font-size: 12px; }")
-                .arg(i < 5 ? "#E8E8E8" : "#5A5A5A"));
-        tl->addWidget(name);
-
-        listenersGrid->addWidget(tile, i / 3, i % 3);
-    }
-    stageLay->addLayout(listenersGrid);
-
-    middleLay->addWidget(stage, 1);
+    // Контейнер для списка
+    listenersListWidget = new QWidget;
+    listenersListLayout = new QVBoxLayout(listenersListWidget);
+    listenersListLayout->setContentsMargins(0, 0, 0, 0);
+    listenersListLayout->setSpacing(4);
+    listenersListLayout->setAlignment(Qt::AlignTop);
+    
+    stageLay->addWidget(listenersListWidget);
+    stageLay->addStretch(1);
+    
+    addListener("Слушатель 1");
+    addListener("Слушатель 2");
+    addListener("Слушатель 3");
+    addListener("Слушатель 4");
+    addListener("Слушатель 5");
 
     //Чат справа
     auto *chat = new QFrame;
@@ -263,6 +257,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sendBtn, &QPushButton::clicked, this, &MainWindow::sendMessage);
     connect(chatInput, &QLineEdit::returnPressed, this, &MainWindow::sendMessage);
 
+    middleLay->addWidget(stage, 1);
     middleLay->addWidget(chat);
     root->addWidget(middle, 1);
     
@@ -808,4 +803,59 @@ void MainWindow::playTestSound(const QAudioDevice &device)
     });
     
     qDebug() << " Буууп>:" << device.description();
+}
+
+void MainWindow::addListener(const QString &name)
+{
+    if (listenerCount >= 6) {
+        qDebug() << " Максимум 6 слушателей!";
+        return;
+    }
+    
+    auto *listenerWidget = createListenerRow(name);
+    listenersListLayout->addWidget(listenerWidget);
+    listenerCount++;
+    updateListenersCount();
+}
+
+QWidget* MainWindow::createListenerRow(const QString &name)
+{
+    auto *row = new QWidget;
+    row->setStyleSheet("QWidget { background-color: transparent; }");
+    auto *lay = new QHBoxLayout(row);
+
+    lay->setContentsMargins(8, 2, 0, 0); 
+    lay->setSpacing(0);
+    
+    auto *nameLabel = new QLabel(name);
+    nameLabel->setStyleSheet( 
+        "QLabel { "
+        "   color: #8A8A8A; "
+        "   font-size: 13px; "
+        "   font-weight: 500; "
+        "   font-family: 'Segoe UI', Arial, sans-serif; "  
+        "}"
+    );
+    lay->addWidget(nameLabel, 1);
+    return row;
+}
+void MainWindow::updateListenersCount()
+{
+    if (listenersCountLabel) {
+        listenersCountLabel->setText(QString("СЛУШАТЕЛИ (%1/6)").arg(listenerCount));
+    }
+}
+
+void MainWindow::showAddListenerDialog()
+{
+    bool ok;
+    QString name = QInputDialog::getText(this, "Добавить слушателя",
+                                         "Имя слушателя:",
+                                         QLineEdit::Normal,
+                                         QString("Слушатель %1").arg(listenerCount + 1),
+                                         &ok);
+    
+    if (ok && !name.trimmed().isEmpty()) {
+        addListener(name.trimmed());
+    }
 }

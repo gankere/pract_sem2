@@ -12,6 +12,9 @@
 #include <QMediaDevices>
 #include <QAudioDevice>
 #include <QAudioSink>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QInputDialog>
 
 struct ChatMessage {
     QString sender;      // кто отправил
@@ -52,10 +55,21 @@ private:
     QTextEdit *chatDisplay;
     QLineEdit *chatInput;
     
+    // Для списка слушателей
+    QVBoxLayout *listenersListLayout;
+    QLabel *listenersCountLabel;
+    QWidget *listenersListWidget;
+    int listenerCount;
+
     void loadSettings();
     void saveSettings();
     void initMicrophone();
     void addMessageToChat(const ChatMessage &msg);
     void restartAudioCapture(const QAudioDevice &device);
     void playTestSound(const QAudioDevice &device);
+    
+    QWidget* createListenerRow(const QString &name);
+    void addListener(const QString &name);
+    void updateListenersCount();
+    void showAddListenerDialog();
 };
