@@ -15,12 +15,22 @@
 #include <QSlider>
 #include <QDebug>
 #include <QSettings>
+#include <QTimer>
+#include <QtMath>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     // Инициализация настроек
     settings = new QSettings("PodcastApp", "MiniPodcast", this);
     loadSettings();
+
+    // Инициализация аудио
+    audioSource = nullptr;
+    audioDevice = nullptr;
+    activeHostTile = nullptr;
+    micDeviceList = nullptr;
+    speakerDeviceList = nullptr;
+    vuTimer = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -50,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     encryption->setStyleSheet("QLabel { color: #8A8A8A; margin-left: 12px; }");
     topLay->addWidget(encryption);
 
-    // Кнопка настроек в правом верхнем углу
+    // Кнопка настроек
     settingsBtn = new QPushButton("⚙️");
     settingsBtn->setFixedSize(36, 36);
     settingsBtn->setStyleSheet(
@@ -64,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     root->addWidget(topBar);
 
-    // === ЦЕНТРАЛЬНАЯ ОБЛАСТЬ + ЧАТ ===
+    //ЦЕНТРАЛЬНАЯ ОБЛАСТЬ + ЧАТ
     auto *middle = new QWidget;
     auto *middleLay = new QHBoxLayout(middle);
     middleLay->setContentsMargins(0, 0, 0, 0);
@@ -87,12 +97,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     for (int i = 0; i < 2; ++i) {
         auto *tile = new QFrame;
         tile->setMinimumHeight(220);
-        tile->setStyleSheet("QFrame { background-color: #141414; border-radius: 10px; }");
+        
+        tile->setObjectName("hostTile");
+        tile->setStyleSheet(
+            "#hostTile { "
+            "   background-color: #141414; "
+            "   border: 3px solid transparent; "
+            "   border-radius: 10px; "
+            "}"
+        );
+    
+        if (i == 0) {
+            activeHostTile = tile;
+        }
+        
         auto *tl = new QVBoxLayout(tile);
         tl->setContentsMargins(0, 0, 0, 0);
         tl->setSpacing(0);
 
         auto *centerWidget = new QWidget;
+        centerWidget->setStyleSheet("background-color: transparent;");
         auto *centerLay = new QVBoxLayout(centerWidget);
         centerLay->setContentsMargins(0, 0, 0, 0);
         centerLay->setSpacing(8);
@@ -101,18 +125,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         avatar->setFixedSize(100, 100);
         avatar->setAlignment(Qt::AlignCenter);
         avatar->setStyleSheet(
-            "QLabel { background-color: #B5656B; color: #E8E8E8; "
-            "border-radius: 50px; font-size: 36px; font-weight: bold; }");
+            "QLabel { "
+            "   background-color: #B5656B; "
+            "   color: #E8E8E8; "
+            "   border-radius: 50px; "
+            "   font-size: 36px; "
+            "   font-weight: bold; "
+            "}");
         centerLay->addWidget(avatar, 0, Qt::AlignHCenter);
         auto *name = new QLabel(i == 0 ? "Анна" : "Анастасия");
         name->setAlignment(Qt::AlignCenter);
-        name->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 16px; }");
+        name->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 16px; background-color: transparent; }");
         centerLay->addWidget(name);
         centerLay->addStretch(1);
         
         tl->addWidget(centerWidget, 1);
 
         auto *statusWidget = new QWidget;
+        statusWidget->setStyleSheet("background-color: transparent;");
         auto *statusLay = new QHBoxLayout(statusWidget);
         statusLay->setContentsMargins(0, 8, 12, 12);
         statusLay->setSpacing(6);
@@ -164,7 +194,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     middleLay->addWidget(stage, 1);
 
-    // --- Чат справа ---
+    //Чат справа
     auto *chat = new QFrame;
     chat->setFixedWidth(300);
     chat->setStyleSheet("QFrame { background-color: #141414; }");
@@ -177,32 +207,62 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     chatTitle->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; }");
     chatHeader->addWidget(chatTitle);
     chatHeader->addStretch(1);
-    auto *closeChat = new QLabel("✕");
-    closeChat->setStyleSheet("QLabel { color: #8A8A8A; }");
-    chatHeader->addWidget(closeChat);
     chatLay->addLayout(chatHeader);
 
-    auto *chatBody = new QFrame;
-    chatBody->setStyleSheet("QFrame { background-color: #0A0A0A; border-radius: 10px; }");
-    auto *chatBodyLay = new QVBoxLayout(chatBody);
-    auto *chatPlaceholder = new QLabel("(список вопросов)");
-    chatPlaceholder->setStyleSheet("QLabel { color: #6B6B6B; }");
-    chatBodyLay->addWidget(chatPlaceholder);
-    chatBodyLay->addStretch(1);
-    chatLay->addWidget(chatBody, 1);
+    // Область сообщений
+    chatDisplay = new QTextEdit;
+    chatDisplay->setReadOnly(true);
+    chatDisplay->setStyleSheet(
+        "QTextEdit { "
+        "   background-color: #0A0A0A; "
+        "   color: #E8E8E8; "
+        "   border: none; "
+        "   border-radius: 10px; "
+        "   font-size: 13px; "
+        "   padding: 8px; "
+        "} "
+        "QTextEdit::selection { background-color: #B5656B; }"
+    );
+    chatDisplay->setPlaceholderText("Сообщения появятся здесь...");
+    chatLay->addWidget(chatDisplay, 1);
 
-    auto *chatInput = new QFrame;
-    chatInput->setFixedHeight(40);
-    chatInput->setStyleSheet("QFrame { background-color: #1A1A1A; border-radius: 10px; }");
-    auto *chatInputLay = new QHBoxLayout(chatInput);
-    auto *chatInputText = new QLabel("Задайте вопрос...");
-    chatInputText->setStyleSheet("QLabel { color: #5A5A5A; }");
-    chatInputLay->addWidget(chatInputText);
-    chatLay->addWidget(chatInput);
+    // Поле ввода
+    auto *inputFrame = new QFrame;
+    inputFrame->setFixedHeight(40);
+    inputFrame->setStyleSheet("QFrame { background-color: #1A1A1A; border-radius: 10px; }");
+    auto *inputLay = new QHBoxLayout(inputFrame);
+    inputLay->setContentsMargins(8, 4, 8, 4);
+    inputLay->setSpacing(8);
+
+    chatInput = new QLineEdit;
+    chatInput->setPlaceholderText("Задайте вопрос...");
+    chatInput->setStyleSheet(
+        "QLineEdit { "
+        "   background-color: transparent; "
+        "   color: #E8E8E8; "
+        "   border: none; "
+        "   font-size: 13px; "
+        "} "
+        "QLineEdit::placeholder { color: #5A5A5A; }"
+    );
+    inputLay->addWidget(chatInput, 1);
+
+    auto *sendBtn = new QPushButton("➤");
+    sendBtn->setFixedSize(32, 32);
+    sendBtn->setStyleSheet(
+        "QPushButton { background-color: #B5656B; color: #E8E8E8; border-radius: 16px; font-weight: bold; }"
+        "QPushButton:hover { background-color: #C96969; }"
+    );
+    inputLay->addWidget(sendBtn);
+    chatLay->addWidget(inputFrame);
+
+    // Подключения
+    connect(sendBtn, &QPushButton::clicked, this, &MainWindow::sendMessage);
+    connect(chatInput, &QLineEdit::returnPressed, this, &MainWindow::sendMessage);
 
     middleLay->addWidget(chat);
     root->addWidget(middle, 1);
-
+    
     // === НИЖНЯЯ ПАНЕЛЬ УПРАВЛЕНИЯ ===
     auto *bottomBar = new QFrame;
     bottomBar->setFixedHeight(70);
@@ -214,7 +274,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // Функция создания кнопки с выпадающим меню
     auto createAudioButtonWithMenu = [this](const QString &icon, const QString &text, 
                                              bool isInput, QWidget *parent) {
-        // Создаем ЕДИНЫЙ контейнер с закругленными углами
         auto *container = new QWidget;
         container->setFixedSize(90, 42);
         container->setStyleSheet(
@@ -227,8 +286,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         auto *lay = new QHBoxLayout(container);
         lay->setContentsMargins(0, 0, 0, 0);
         lay->setSpacing(0);
-
-        // ЛЕВАЯ кнопка с иконкой
+        
         auto *iconBtn = new QPushButton(icon);
         iconBtn->setFixedSize(52, 42);
         iconBtn->setStyleSheet(
@@ -253,7 +311,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         );
         lay->addWidget(iconBtn);
 
-        // === Создаем меню (ПЕРЕД кнопкой-стрелочкой!) ===
         auto *menu = new QMenu(parent);
         menu->setStyleSheet(
             "QMenu { "
@@ -272,11 +329,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             "}"
         );
 
-        // ПРАВАЯ кнопка-стрелочка (QToolButton)
+        // ПРАВАЯ кнопка-стрелочка
         auto *menuBtn = new QToolButton;
         menuBtn->setFixedSize(38, 42);
         menuBtn->setText("▼");
-        menuBtn->setPopupMode(QToolButton::DelayedPopup); // Qt не управляет позицией
+        menuBtn->setPopupMode(QToolButton::DelayedPopup);
         menuBtn->setStyleSheet(
             "QToolButton { "
             "   background-color: transparent; "
@@ -310,6 +367,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         titleLay->addWidget(titleLabel);
 
         auto *deviceList = new QComboBox;
+        
+        // ✅ Сохраняем указатель на ComboBox для дальнейшего использования
+        if (isInput) {
+            micDeviceList = deviceList;
+        } else {
+            speakerDeviceList = deviceList;
+        }
+        
         deviceList->setStyleSheet(
             "QComboBox { "
             "   background-color: #0F0F0F; "
@@ -410,6 +475,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         );
         titleLay->addWidget(volumeSlider);
 
+        // подключение сигнала
         QObject::connect(deviceList, QOverload<int>::of(&QComboBox::currentIndexChanged),
             [this, deviceList, devices, isInput](int index) {
                 if (index >= 0 && index < devices.size()) {
@@ -418,6 +484,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                         isInput ? "audio/inputDevice" : "audio/outputDevice",
                         deviceName
                     );
+                    
+                    // переинициализация захвата
+                    if (isInput) {
+                        restartAudioCapture(devices[index]);
+                    }
                 }
             });
 
@@ -433,7 +504,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         menuAction->setDefaultWidget(titleWidget);
         menu->addAction(menuAction);
 
-        // === Ручное управление меню (ВСЕГДА ВВЕРХ!) ===
+        // === Ручное управление меню ===
         QObject::connect(menuBtn, &QToolButton::clicked, [menu, menuBtn]() {
             if (menu->isVisible()) {
                 menu->hide();
@@ -445,8 +516,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                 menuBtn->setText("▲");
             }
         });
-
-        // Обновляем стрелочку при закрытии меню (клик вне меню)
         QObject::connect(menu, &QMenu::aboutToHide, [menuBtn]() {
             menuBtn->setText("▼");
         });
@@ -479,11 +548,147 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     setCentralWidget(central);
     resize(1100, 750);
+    initMicrophone();   // Запуск микро после создания UI
 }
 
 MainWindow::~MainWindow()
 {
+    if (audioSource) {
+        audioSource->stop();
+        delete audioSource;
+    }
     saveSettings();
+}
+
+// Инициализация микрофона и подсветка рамки ведущего при говорении
+void MainWindow::initMicrophone()
+{
+    // доступные микрофоны
+    QList<QAudioDevice> devices = QMediaDevices::audioInputs();
+    if (devices.isEmpty()) {
+        qDebug() << "❌ Микрофоны не найдены!";
+        return;
+    }
+
+    // сохранённое устройство
+    QString savedDeviceName = settings->value("audio/inputDevice", "").toString();
+    QAudioDevice device;
+    
+    if (!savedDeviceName.isEmpty()) {
+        for (const QAudioDevice &d : devices) {
+            if (d.description() == savedDeviceName) {
+                device = d;
+                qDebug() << "✅ Используем сохранённый микрофон:" << device.description();
+                break;
+            }
+        }
+    }
+    
+    // Если не нашли — берём по умолчанию
+    if (device.isNull()) {
+        device = QMediaDevices::defaultAudioInput();
+        qDebug() << "⚠️ Сохранённый микрофон не найден, используем по умолчанию:" << device.description();
+    }
+    restartAudioCapture(device);
+}
+
+void MainWindow::restartAudioCapture(const QAudioDevice &device)
+{
+    // Останавливаем старый захват
+    if (audioSource) {
+        audioSource->stop();
+        delete audioSource;
+        audioSource = nullptr;
+    }
+    
+    // ✅ ДОБАВЛЕНО: Останавливаем и удаляем старый таймер, чтобы они не конфликтовали
+    if (vuTimer) {
+        vuTimer->stop();
+        delete vuTimer;
+        vuTimer = nullptr;
+    }
+    
+    // Настраиваем формат
+    QAudioFormat format;
+    format.setSampleRate(16000);
+    format.setChannelCount(1);
+    format.setSampleFormat(QAudioFormat::Int16);
+
+    if (!device.isFormatSupported(format)) {
+        qDebug() << "⚠️ Формат не поддерживается, используем дефолтный";
+        format = device.preferredFormat();
+    }
+
+    // Создаём источник звука
+    audioSource = new QAudioSource(device, format, this);
+    audioDevice = audioSource->start();
+    
+    if (!audioDevice) {
+        qDebug() << "❌ Не удалось запустить захват звука!";
+        return;
+    }
+
+    qDebug() << "🎙️ Микрофон запущен/переключён на:" << device.description();
+
+    const int SPEAK_THRESHOLD = 1;   // уровень включения подсветки
+    const int SILENT_THRESHOLD = 5;   // уровень выключения подсветки
+    
+    bool isSpeaking = false;  // текущее состояние: говорит / молчит
+
+    vuTimer = new QTimer(this);
+    connect(vuTimer, &QTimer::timeout, this, [this, SPEAK_THRESHOLD, SILENT_THRESHOLD, &isSpeaking]() {
+        if (!audioDevice || !audioDevice->bytesAvailable()) {
+            if (isSpeaking && activeHostTile) {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { "
+                    "   background-color: #141414; "
+                    "   border: 3px solid transparent; "
+                    "   border-radius: 10px; "
+                    "}");
+                isSpeaking = false;
+            }
+            return;
+        }
+
+        QByteArray data = audioDevice->readAll();
+        
+        // Считаем уровень звука (среднеквадратичное значение)
+        const qint16 *samples = reinterpret_cast<const qint16*>(data.constData());
+        int sampleCount = data.size() / sizeof(qint16);
+        
+        if (sampleCount == 0) return;
+        
+        double sumSquares = 0;
+        for (int i = 0; i < sampleCount; ++i) {
+            double s = samples[i];
+            sumSquares += s * s;
+        }
+        double rms = qSqrt(sumSquares / sampleCount);
+        
+        int level = qMin(100, static_cast<int>(rms / 327.68));
+        
+        if (activeHostTile) {
+            if (!isSpeaking && level > SPEAK_THRESHOLD) {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { "
+                    "   background-color: #141414; "
+                    "   border: 3px solid #50C878; "
+                    "   border-radius: 10px; "
+                    "}");
+                isSpeaking = true;
+            } else if (isSpeaking && level < SILENT_THRESHOLD) {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { "
+                    "   background-color: #141414; "
+                    "   border: 3px solid transparent; "
+                    "   border-radius: 10px; "
+                    "}");
+                isSpeaking = false;
+            }
+        }
+    });
+    
+    vuTimer->start(50); // Обновляем каждые 50 мс (20 раз в секунду)
 }
 
 void MainWindow::loadSettings()
@@ -500,4 +705,40 @@ void MainWindow::saveSettings()
 void MainWindow::openSettings()
 {
     qDebug() << "Открытие настроек...";
+}
+
+void MainWindow::sendMessage()
+{
+    QString text = chatInput->text().trimmed();
+    if (text.isEmpty()) return;
+
+    ChatMessage msg;
+    msg.sender = "Вы";
+    msg.text = text;
+    msg.isLocal = true;
+
+    addMessageToChat(msg);
+    chatInput->clear();
+
+    qDebug() << "[CHAT] Отправлено:" << text;
+}
+
+void MainWindow::onMessageReceived(const ChatMessage &msg)
+{
+    addMessageToChat(msg);
+    qDebug() << "[CHAT] Получено от" << msg.sender << ":" << msg.text;
+}
+
+void MainWindow::addMessageToChat(const ChatMessage &msg)
+{
+    QString color = msg.isLocal ? "#B5656B" : "#50C878";
+    
+    QString html = QString(
+        "<div style='margin-bottom: 8px; line-height: 1.4;'>"
+        "<span style='color: %1; font-weight: bold;'>%2:</span> "
+        "<span style='color: #E8E8E8;'>%3</span>"
+        "</div>"
+    ).arg(color, msg.sender, msg.text);
+
+    chatDisplay->append(html);
 }
