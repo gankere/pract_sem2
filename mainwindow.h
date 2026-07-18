@@ -15,6 +15,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QInputDialog>
+#include <QTime> 
 
 struct ChatMessage {
     QString sender;      // кто отправил
@@ -61,6 +62,12 @@ private:
     QWidget *listenersListWidget;
     int listenerCount;
 
+    // Таймер подкаста
+    QTimer *podcastTimer;
+    QLabel *durationLabel;
+    QTime podcastStartTime;
+    int podcastDurationSeconds;
+
     void loadSettings();
     void saveSettings();
     void initMicrophone();
@@ -72,4 +79,7 @@ private:
     void addListener(const QString &name);
     void updateListenersCount();
     void showAddListenerDialog();
+
+    void updateDurationDisplay();
+    void startPodcastTimer();
 };

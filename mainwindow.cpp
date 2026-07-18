@@ -59,25 +59,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     topLay->addStretch(1);
 
-    auto *timer = new QLabel("<длительность подкаста>");
-    timer->setStyleSheet("QLabel { color: #8A8A8A; font-family: Consolas; font-size: 14px; }");
-    topLay->addWidget(timer);
+    durationLabel = new QLabel("00:00");
+    durationLabel->setStyleSheet("QLabel { color: #8A8A8A; font-family: 'Consolas', monospace; font-size: 14px; }");
+    durationLabel->setMinimumWidth(60);
+    durationLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    topLay->addWidget(durationLabel);
+    
+    podcastTimer = new QTimer(this);
+    podcastStartTime = QTime::currentTime();
+    podcastDurationSeconds = 0;
+    
+    connect(podcastTimer, &QTimer::timeout, this, [this]() {
+        podcastDurationSeconds++;
+        updateDurationDisplay();
+    });
+    
+    startPodcastTimer();    // Запуск таймера при старте
 
-    auto *encryption = new QLabel("🔒");
-    encryption->setStyleSheet("QLabel { color: #8A8A8A; margin-left: 12px; }");
-    topLay->addWidget(encryption);
-
-    // Кнопка настроек
-    settingsBtn = new QPushButton("⚙️");
-    settingsBtn->setFixedSize(36, 36);
-    settingsBtn->setStyleSheet(
-        "QPushButton { background-color: #1A1A1A; color: #E8E8E8; "
-        "border-radius: 10px; font-size: 16px; }"
-        "QPushButton:hover { background-color: #252525; }");
-    settingsBtn->setToolTip("Настройки");
-    topLay->addWidget(settingsBtn);
-
-    connect(settingsBtn, &QPushButton::clicked, this, &MainWindow::openSettings);
+    topLay->addSpacing(12);
 
     root->addWidget(topBar);
 
@@ -200,7 +199,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     chatLay->setSpacing(8);
 
     auto *chatHeader = new QHBoxLayout;
-    auto *chatTitle = new QLabel("💬 Чат");
+    auto *chatTitle = new QLabel("Чат");
     chatTitle->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; }");
     chatHeader->addWidget(chatTitle);
     chatHeader->addStretch(1);
@@ -558,6 +557,9 @@ MainWindow::~MainWindow()
         audioSource->stop();
         delete audioSource;
     }
+    if (podcastTimer) {
+        podcastTimer->stop();
+    }
     // ✅ ДОБАВЛЕНО: очистка аудио-выхода
     if (audioSink) {
         audioSink->stop();
@@ -858,4 +860,33 @@ void MainWindow::showAddListenerDialog()
     if (ok && !name.trimmed().isEmpty()) {
         addListener(name.trimmed());
     }
+}
+
+void MainWindow::updateDurationDisplay()
+{
+    int hours = podcastDurationSeconds / 3600;
+    int minutes = (podcastDurationSeconds % 3600) / 60;
+    int seconds = podcastDurationSeconds % 60;
+    
+    QString timeString;
+    if (hours > 0) {
+        timeString = QString("%1:%2:%3")
+            .arg(hours, 2, 10, QChar('0'))
+            .arg(minutes, 2, 10, QChar('0'))
+            .arg(seconds, 2, 10, QChar('0'));
+    } else {
+        timeString = QString("%1:%2")
+            .arg(minutes, 2, 10, QChar('0'))
+            .arg(seconds, 2, 10, QChar('0'));
+    }
+    
+    durationLabel->setText(timeString);
+}
+
+void MainWindow::startPodcastTimer()
+{
+    podcastDurationSeconds = 0;
+    podcastStartTime = QTime::currentTime();
+    updateDurationDisplay();
+    podcastTimer->start(1000); // Обновляем каждую секунду
 }
