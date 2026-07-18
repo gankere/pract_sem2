@@ -17,10 +17,7 @@
 #include <QSettings>
 #include <QTimer>
 #include <QtMath>
-<<<<<<< HEAD
-=======
 #include <QAudioSink>
->>>>>>> Ann_work
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -35,8 +32,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     micDeviceList = nullptr;
     speakerDeviceList = nullptr;
     vuTimer = nullptr;
-<<<<<<< HEAD
-=======
     audioSink = nullptr;
     audioOutputDevice = nullptr;
     listenerCount = 0;
@@ -44,7 +39,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     listenersListLayout = nullptr;
     listenersCountLabel = nullptr;
     meetingName = nullptr;
->>>>>>> Ann_work
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -60,35 +54,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto *topLay = new QHBoxLayout(topBar);
     topLay->setContentsMargins(16, 0, 16, 0);
 
-<<<<<<< HEAD
-    auto *meetingName = new QLabel("Мини-подкаст: <название подкаста>");
-=======
     meetingName = new QLabel("Мини-подкаст: <название подкаста>");
->>>>>>> Ann_work
     meetingName->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 14px; }");
     topLay->addWidget(meetingName);
 
     topLay->addStretch(1);
 
-<<<<<<< HEAD
-    auto *timer = new QLabel("<длительность подкаста>");
-    timer->setStyleSheet("QLabel { color: #8A8A8A; font-family: Consolas; font-size: 14px; }");
-    topLay->addWidget(timer);
-
-    auto *encryption = new QLabel("🔒");
-    encryption->setStyleSheet("QLabel { color: #8A8A8A; margin-left: 12px; }");
-    topLay->addWidget(encryption);
-
-    // Кнопка настроек
-    settingsBtn = new QPushButton("⚙️");
-    settingsBtn->setFixedSize(36, 36);
-    settingsBtn->setStyleSheet(
-        "QPushButton { background-color: #1A1A1A; color: #E8E8E8; "
-        "border-radius: 10px; font-size: 16px; }"
-        "QPushButton:hover { background-color: #252525; }");
-    settingsBtn->setToolTip("Настройки");
-    topLay->addWidget(settingsBtn);
-=======
     durationLabel = new QLabel("00:00");
     durationLabel->setStyleSheet("QLabel { color: #8A8A8A; font-family: 'Consolas', monospace; font-size: 14px; }");
     durationLabel->setMinimumWidth(60);
@@ -107,7 +78,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     startPodcastTimer();    // Запуск таймера при старте
 
     topLay->addSpacing(12);
->>>>>>> Ann_work
 
     connect(settingsBtn, &QPushButton::clicked, this, &MainWindow::openSettings);
 
@@ -198,43 +168,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     stageLay->addLayout(hostsGrid);
 
     // Слушатели
-<<<<<<< HEAD
-    auto *listenersLabel = new QLabel("СЛУШАТЕЛИ (5/6)");
-    listenersLabel->setStyleSheet("QLabel { color: #6B6B6B; font-size: 11px; font-weight: bold; }");
-    stageLay->addWidget(listenersLabel);
-
-    auto *listenersGrid = new QGridLayout;
-    listenersGrid->setSpacing(8);
-    for (int i = 0; i < 6; ++i) {
-        auto *tile = new QFrame;
-        tile->setMinimumHeight(100);
-        tile->setStyleSheet("QFrame { background-color: #141414; border-radius: 10px; }");
-        auto *tl = new QVBoxLayout(tile);
-        tl->setContentsMargins(10, 10, 10, 10);
-        tl->setSpacing(8);
-        tl->addSpacing(12);
-
-        auto *avatar = new QLabel(i < 5 ? QString::number(i + 1) : "+");
-        avatar->setFixedSize(36, 36);
-        avatar->setAlignment(Qt::AlignCenter);
-        avatar->setStyleSheet(
-            "QLabel { background-color: #B5656B; color: #E8E8E8; border-radius: 18px; font-weight: bold; }");
-        tl->addWidget(avatar, 0, Qt::AlignHCenter);
-
-        auto *name = new QLabel(i < 5 ? QString("Слушатель %1").arg(i + 1) : "");
-        name->setAlignment(Qt::AlignCenter);
-        name->setStyleSheet(
-            QString("QLabel { color: %1; font-size: 12px; }")
-                .arg(i < 5 ? "#E8E8E8" : "#5A5A5A"));
-        tl->addWidget(name);
-
-        listenersGrid->addWidget(tile, i / 3, i % 3);
-    }
-    stageLay->addLayout(listenersGrid);
-
-    middleLay->addWidget(stage, 1);
-
-=======
     auto *separator = new QFrame;
     separator->setFixedHeight(1);
     separator->setStyleSheet("QFrame { background-color: #1F1F1F; margin-top: 4px; margin-bottom: 12px; }");
@@ -260,7 +193,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     addListener("Слушатель 4");
     addListener("Слушатель 5");
 
->>>>>>> Ann_work
     //Чат справа
     auto *chat = new QFrame;
     chat->setFixedWidth(300);
@@ -270,11 +202,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     chatLay->setSpacing(8);
 
     auto *chatHeader = new QHBoxLayout;
-<<<<<<< HEAD
-    auto *chatTitle = new QLabel("💬 Чат");
-=======
     auto *chatTitle = new QLabel("Чат");
->>>>>>> Ann_work
     chatTitle->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; }");
     chatHeader->addWidget(chatTitle);
     chatHeader->addStretch(1);
@@ -304,35 +232,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto *inputLay = new QHBoxLayout(inputFrame);
     inputLay->setContentsMargins(8, 4, 8, 4);
     inputLay->setSpacing(8);
-<<<<<<< HEAD
-
-    chatInput = new QLineEdit;
-    chatInput->setPlaceholderText("Задайте вопрос...");
-    chatInput->setStyleSheet(
-        "QLineEdit { "
-        "   background-color: transparent; "
-        "   color: #E8E8E8; "
-        "   border: none; "
-        "   font-size: 13px; "
-        "} "
-        "QLineEdit::placeholder { color: #5A5A5A; }"
-    );
-    inputLay->addWidget(chatInput, 1);
-
-    auto *sendBtn = new QPushButton("➤");
-    sendBtn->setFixedSize(32, 32);
-    sendBtn->setStyleSheet(
-        "QPushButton { background-color: #B5656B; color: #E8E8E8; border-radius: 16px; font-weight: bold; }"
-        "QPushButton:hover { background-color: #C96969; }"
-    );
-    inputLay->addWidget(sendBtn);
-    chatLay->addWidget(inputFrame);
-
-    // Подключения
-    connect(sendBtn, &QPushButton::clicked, this, &MainWindow::sendMessage);
-    connect(chatInput, &QLineEdit::returnPressed, this, &MainWindow::sendMessage);
-=======
->>>>>>> Ann_work
 
     chatInput = new QLineEdit;
     chatInput->setPlaceholderText("Задайте вопрос...");
@@ -586,18 +485,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                         deviceName
                     );
                     
-<<<<<<< HEAD
-                    // переинициализация захвата
-                    if (isInput) {
-                        restartAudioCapture(devices[index]);
-=======
                     if (isInput) {
                         // переинициализация захвата микрофона
                         restartAudioCapture(devices[index]);
                     } else {
-                        // ✅ ВОСПРОИЗВЕДЕНИЕ ТЕСТОВОГО ЗВУКА НА НОВЫХ ДИНАМИКАХ
                         playTestSound(devices[index]);
->>>>>>> Ann_work
                     }
                 }
             });
@@ -667,8 +559,6 @@ MainWindow::~MainWindow()
         audioSource->stop();
         delete audioSource;
     }
-<<<<<<< HEAD
-=======
     if (podcastTimer) {
         podcastTimer->stop();
     }
@@ -680,7 +570,6 @@ MainWindow::~MainWindow()
         vuTimer->stop();
         delete vuTimer;
     }
->>>>>>> Ann_work
     saveSettings();
 }
 
@@ -724,12 +613,6 @@ void MainWindow::restartAudioCapture(const QAudioDevice &device)
         delete audioSource;
         audioSource = nullptr;
     }
-<<<<<<< HEAD
-    
-    // ✅ ДОБАВЛЕНО: Останавливаем и удаляем старый таймер, чтобы они не конфликтовали
-=======
-
->>>>>>> Ann_work
     if (vuTimer) {
         vuTimer->stop();
         delete vuTimer;
@@ -869,8 +752,6 @@ void MainWindow::addMessageToChat(const ChatMessage &msg)
     ).arg(color, msg.sender, msg.text);
 
     chatDisplay->append(html);
-<<<<<<< HEAD
-=======
 }
 
 void MainWindow::playTestSound(const QAudioDevice &device)
@@ -1014,5 +895,4 @@ void MainWindow::setPodcastName(const QString &name)
     if (meetingName) {
         meetingName->setText("Мини-подкаст: " + name);
     }
->>>>>>> Ann_work
 }

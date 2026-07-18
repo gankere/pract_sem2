@@ -1,4 +1,4 @@
-C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc_mainwindow.cpp: C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h \
+C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc_podcastserver.cpp: C:/Users/gankere/TPU_Workspace/sem4/pract/podcastserver.h \
   C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/moc_predefs.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
@@ -201,10 +201,11 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/pthread_signal.h \
   C:/msys64/mingw64/include/pthread_time.h \
   C:/msys64/mingw64/include/pthread_unistd.h \
-  C:/msys64/mingw64/include/qt6/QtCore/QIODevice \
-  C:/msys64/mingw64/include/qt6/QtCore/QSettings \
+  C:/msys64/mingw64/include/qt6/QtCore/QJsonDocument \
+  C:/msys64/mingw64/include/qt6/QtCore/QJsonObject \
+  C:/msys64/mingw64/include/qt6/QtCore/QMap \
+  C:/msys64/mingw64/include/qt6/QtCore/QObject \
   C:/msys64/mingw64/include/qt6/QtCore/QString \
-  C:/msys64/mingw64/include/qt6/QtCore/QTime \
   C:/msys64/mingw64/include/qt6/QtCore/q17memory.h \
   C:/msys64/mingw64/include/qt6/QtCore/q20bit.h \
   C:/msys64/mingw64/include/qt6/QtCore/q20functional.h \
@@ -214,7 +215,6 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtCore/q20utility.h \
   C:/msys64/mingw64/include/qt6/QtCore/q23type_traits.h \
   C:/msys64/mingw64/include/qt6/QtCore/q23utility.h \
-  C:/msys64/mingw64/include/qt6/QtCore/qabstractitemmodel.h \
   C:/msys64/mingw64/include/qt6/QtCore/qalgorithms.h \
   C:/msys64/mingw64/include/qt6/QtCore/qalloc.h \
   C:/msys64/mingw64/include/qt6/QtCore/qanystringview.h \
@@ -231,8 +231,9 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtCore/qbytearraylist.h \
   C:/msys64/mingw64/include/qt6/QtCore/qbytearrayview.h \
   C:/msys64/mingw64/include/qt6/QtCore/qcalendar.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qcborcommon.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qcborvalue.h \
   C:/msys64/mingw64/include/qt6/QtCore/qchar.h \
-  C:/msys64/mingw64/include/qt6/QtCore/qcheckedint_impl.h \
   C:/msys64/mingw64/include/qt6/QtCore/qcompare.h \
   C:/msys64/mingw64/include/qt6/QtCore/qcompare_impl.h \
   C:/msys64/mingw64/include/qt6/QtCore/qcomparehelpers.h \
@@ -263,14 +264,16 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtCore/qiodevicebase.h \
   C:/msys64/mingw64/include/qt6/QtCore/qiterable.h \
   C:/msys64/mingw64/include/qt6/QtCore/qiterator.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qjsondocument.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qjsonobject.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qjsonparseerror.h \
+  C:/msys64/mingw64/include/qt6/QtCore/qjsonvalue.h \
   C:/msys64/mingw64/include/qt6/QtCore/qlatin1stringview.h \
-  C:/msys64/mingw64/include/qt6/QtCore/qline.h \
   C:/msys64/mingw64/include/qt6/QtCore/qlist.h \
   C:/msys64/mingw64/include/qt6/QtCore/qlocale.h \
   C:/msys64/mingw64/include/qt6/QtCore/qlogging.h \
   C:/msys64/mingw64/include/qt6/QtCore/qmalloc.h \
   C:/msys64/mingw64/include/qt6/QtCore/qmap.h \
-  C:/msys64/mingw64/include/qt6/QtCore/qmargins.h \
   C:/msys64/mingw64/include/qt6/QtCore/qmath.h \
   C:/msys64/mingw64/include/qt6/QtCore/qmetacontainer.h \
   C:/msys64/mingw64/include/qt6/QtCore/qmetatype.h \
@@ -283,20 +286,16 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtCore/qobjectdefs_impl.h \
   C:/msys64/mingw64/include/qt6/QtCore/qoverload.h \
   C:/msys64/mingw64/include/qt6/QtCore/qpair.h \
-  C:/msys64/mingw64/include/qt6/QtCore/qpoint.h \
   C:/msys64/mingw64/include/qt6/QtCore/qprocessordetection.h \
-  C:/msys64/mingw64/include/qt6/QtCore/qrect.h \
   C:/msys64/mingw64/include/qt6/QtCore/qrefcount.h \
   C:/msys64/mingw64/include/qt6/QtCore/qregularexpression.h \
   C:/msys64/mingw64/include/qt6/QtCore/qscopedpointer.h \
   C:/msys64/mingw64/include/qt6/QtCore/qscopeguard.h \
   C:/msys64/mingw64/include/qt6/QtCore/qset.h \
-  C:/msys64/mingw64/include/qt6/QtCore/qsettings.h \
   C:/msys64/mingw64/include/qt6/QtCore/qshareddata.h \
   C:/msys64/mingw64/include/qt6/QtCore/qshareddata_impl.h \
   C:/msys64/mingw64/include/qt6/QtCore/qsharedpointer.h \
   C:/msys64/mingw64/include/qt6/QtCore/qsharedpointer_impl.h \
-  C:/msys64/mingw64/include/qt6/QtCore/qsize.h \
   C:/msys64/mingw64/include/qt6/QtCore/qspan.h \
   C:/msys64/mingw64/include/qt6/QtCore/qstdlibdetection.h \
   C:/msys64/mingw64/include/qt6/QtCore/qstring.h \
@@ -336,96 +335,21 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/EWIEGA46WW/moc
   C:/msys64/mingw64/include/qt6/QtCore/qtypes.h \
   C:/msys64/mingw64/include/qt6/QtCore/qurl.h \
   C:/msys64/mingw64/include/qt6/QtCore/qutf8stringview.h \
+  C:/msys64/mingw64/include/qt6/QtCore/quuid.h \
   C:/msys64/mingw64/include/qt6/QtCore/qvariant.h \
   C:/msys64/mingw64/include/qt6/QtCore/qvarlengtharray.h \
   C:/msys64/mingw64/include/qt6/QtCore/qversiontagging.h \
   C:/msys64/mingw64/include/qt6/QtCore/qxptype_traits.h \
   C:/msys64/mingw64/include/qt6/QtCore/qyieldcpu.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qaction.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qbitmap.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qbrush.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qcolor.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qcursor.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qfont.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qfontinfo.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qfontmetrics.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qfontvariableaxis.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qicon.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qimage.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qkeysequence.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qpaintdevice.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qpalette.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qpen.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qpicture.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qpixelformat.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qpixmap.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qpolygon.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qregion.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qrgb.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qrgba64.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qtextcursor.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qtextdocument.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qtextformat.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qtextoption.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qtgui-config.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qtguiexports.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qtguiglobal.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qtransform.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qvalidator.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h \
-  C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioDevice \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioSink \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioSource \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/QMediaDevices \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudio.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiodevice.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudioformat.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiosink.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiosource.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qmediadevices.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qtaudio.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimedia-config.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaexports.h \
-  C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaglobal.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QComboBox \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QFrame \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QInputDialog \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QLabel \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QLineEdit \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QTextEdit \
-  C:/msys64/mingw64/include/qt6/QtWidgets/QVBoxLayout \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qabstractitemdelegate.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qabstractscrollarea.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qabstractslider.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qabstractspinbox.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qboxlayout.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qcombobox.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qdialog.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qframe.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qgridlayout.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qinputdialog.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qlabel.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qlayout.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qlayoutitem.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qlineedit.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qrubberband.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qslider.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qstyle.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qstyleoption.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qtabbar.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qtabwidget.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qtextedit.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgets-config.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgetsexports.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgetsglobal.h \
-  C:/msys64/mingw64/include/qt6/QtWidgets/qwidget.h \
+  C:/msys64/mingw64/include/qt6/QtNetwork/QTcpServer \
+  C:/msys64/mingw64/include/qt6/QtNetwork/QTcpSocket \
+  C:/msys64/mingw64/include/qt6/QtNetwork/qabstractsocket.h \
+  C:/msys64/mingw64/include/qt6/QtNetwork/qhostaddress.h \
+  C:/msys64/mingw64/include/qt6/QtNetwork/qtcpserver.h \
+  C:/msys64/mingw64/include/qt6/QtNetwork/qtcpsocket.h \
+  C:/msys64/mingw64/include/qt6/QtNetwork/qtnetwork-config.h \
+  C:/msys64/mingw64/include/qt6/QtNetwork/qtnetworkexports.h \
+  C:/msys64/mingw64/include/qt6/QtNetwork/qtnetworkglobal.h \
   C:/msys64/mingw64/include/sched.h \
   C:/msys64/mingw64/include/sec_api/stdio_s.h \
   C:/msys64/mingw64/include/sec_api/string_s.h \

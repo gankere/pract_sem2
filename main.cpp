@@ -7,24 +7,14 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-<<<<<<< HEAD
-    MainWindow w;
-    w.setWindowTitle("Мини-подкаст с живым участием");
-    w.resize(1200, 720);
-    w.show();
-=======
     StartDialog startDialog;
-    // Показываем диалог и ждём результата
     if (startDialog.exec() == QDialog::Accepted) {
         MainWindow window;
->>>>>>> Ann_work
 
-        // Передаём название подкаста в главное окно (если есть)
         if (!startDialog.getPodcastName().isEmpty()) {
             window.setPodcastName(startDialog.getPodcastName());
         }
 
-        // Заголовок окна — короткий, можно включить имя клиента отдельно
         QString title = "Мини-подкаст";
         if (!startDialog.getPodcastName().isEmpty()) {
             title = "Мини-подкаст: " + startDialog.getPodcastName();

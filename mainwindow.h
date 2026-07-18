@@ -11,14 +11,11 @@
 #include <QComboBox>
 #include <QMediaDevices>
 #include <QAudioDevice>
-<<<<<<< HEAD
-=======
 #include <QAudioSink>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QInputDialog>
 #include <QTime> 
->>>>>>> Ann_work
 
 struct ChatMessage {
     QString sender;      // кто отправил
@@ -32,10 +29,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-<<<<<<< HEAD
-=======
     void setPodcastName(const QString &name);
->>>>>>> Ann_work
 
 private slots:
     void openSettings();
@@ -46,24 +40,16 @@ private:
     QPushButton *settingsBtn;
     QSettings *settings;
     
-<<<<<<< HEAD
-    // Аудио
-=======
     // Аудио (Ввод)
->>>>>>> Ann_work
     QAudioSource *audioSource;
     QIODevice *audioDevice;
     QFrame *activeHostTile;
     QTimer *vuTimer;
     
-<<<<<<< HEAD
-    // ComboBox'ы для устройств
-=======
     // Аудио (Вывод)
     QAudioSink *audioSink;
     QIODevice *audioOutputDevice;
     
->>>>>>> Ann_work
     QComboBox *micDeviceList;
     QComboBox *speakerDeviceList;
 
@@ -71,8 +57,6 @@ private:
     QTextEdit *chatDisplay;
     QLineEdit *chatInput;
     
-<<<<<<< HEAD
-=======
     // Для списка слушателей
     QVBoxLayout *listenersListLayout;
     QLabel *listenersCountLabel;
@@ -89,14 +73,11 @@ private:
     QString podcastName;
     QLabel *meetingName;
 
->>>>>>> Ann_work
     void loadSettings();
     void saveSettings();
     void initMicrophone();
     void addMessageToChat(const ChatMessage &msg);
     void restartAudioCapture(const QAudioDevice &device);
-<<<<<<< HEAD
-=======
     void playTestSound(const QAudioDevice &device);
     
     QWidget* createListenerRow(const QString &name);
@@ -106,5 +87,4 @@ private:
 
     void updateDurationDisplay();
     void startPodcastTimer();
->>>>>>> Ann_work
 };

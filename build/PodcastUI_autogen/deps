@@ -46,6 +46,8 @@ PodcastUI_autogen/timestamp: \
 	C:/Users/gankere/TPU_Workspace/sem4/pract/main.cpp \
 	C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.cpp \
 	C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h \
+	C:/Users/gankere/TPU_Workspace/sem4/pract/startdialog.cpp \
+	C:/Users/gankere/TPU_Workspace/sem4/pract/startdialog.h \
 	C:/msys64/mingw64/include/_mingw.h \
 	C:/msys64/mingw64/include/_mingw_mac.h \
 	C:/msys64/mingw64/include/_mingw_off_t.h \
@@ -250,6 +252,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtCore/QIODevice \
 	C:/msys64/mingw64/include/qt6/QtCore/QSettings \
 	C:/msys64/mingw64/include/qt6/QtCore/QString \
+	C:/msys64/mingw64/include/qt6/QtCore/QTime \
 	C:/msys64/mingw64/include/qt6/QtCore/q17memory.h \
 	C:/msys64/mingw64/include/qt6/QtCore/q20bit.h \
 	C:/msys64/mingw64/include/qt6/QtCore/q20functional.h \
@@ -275,6 +278,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtCore/qbytearrayalgorithms.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qbytearraylist.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qbytearrayview.h \
+	C:/msys64/mingw64/include/qt6/QtCore/qcalendar.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qchar.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qcheckedint_impl.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qcompare.h \
@@ -289,6 +293,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtCore/qcontiguouscache.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qdarwinhelpers.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qdatastream.h \
+	C:/msys64/mingw64/include/qt6/QtCore/qdatetime.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qdebug.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qendian.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qexceptionhandling.h \
@@ -399,6 +404,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtGui/qpaintdevice.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qpalette.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qpen.h \
+	C:/msys64/mingw64/include/qt6/QtGui/qpicture.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qpixelformat.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qpixmap.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qpolygon.h \
@@ -417,11 +423,13 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioDevice \
+	C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioSink \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioSource \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/QMediaDevices \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudio.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiodevice.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudioformat.h \
+	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiosink.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiosource.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qmediadevices.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qtaudio.h \
@@ -429,18 +437,29 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaexports.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaglobal.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QComboBox \
+	C:/msys64/mingw64/include/qt6/QtWidgets/QDialog \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QFrame \
+	C:/msys64/mingw64/include/qt6/QtWidgets/QInputDialog \
+	C:/msys64/mingw64/include/qt6/QtWidgets/QLabel \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QLineEdit \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QTextEdit \
+	C:/msys64/mingw64/include/qt6/QtWidgets/QVBoxLayout \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractitemdelegate.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractscrollarea.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractslider.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractspinbox.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qboxlayout.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qcombobox.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qdialog.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qframe.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qgridlayout.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qinputdialog.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qlabel.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qlayout.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qlayoutitem.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qlineedit.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h \

@@ -54,7 +54,7 @@ build CMakeFiles/PodcastUI.dir/PodcastUI_autogen/mocs_compilation.cpp.obj: CXX_C
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
   DEP_FILE = CMakeFiles\PodcastUI.dir\PodcastUI_autogen\mocs_compilation.cpp.obj.d
   FLAGS = -g -std=gnu++17
-  INCLUDES = -IC:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6/QtGui -isystem C:/msys64/mingw64/include/qt6/QtMultimedia -isystem C:/msys64/mingw64/include/qt6/QtNetwork
+  INCLUDES = -IC:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtGui -isystem C:/msys64/mingw64/include/qt6/QtMultimedia -isystem C:/msys64/mingw64/include/qt6/QtNetwork
   OBJECT_DIR = CMakeFiles\PodcastUI.dir
   OBJECT_FILE_DIR = CMakeFiles\PodcastUI.dir\PodcastUI_autogen
   TARGET_SUPPORT_DIR = CMakeFiles\PodcastUI.dir
@@ -64,7 +64,7 @@ build CMakeFiles/PodcastUI.dir/main.cpp.obj: CXX_COMPILER__PodcastUI_unscanned_D
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
   DEP_FILE = CMakeFiles\PodcastUI.dir\main.cpp.obj.d
   FLAGS = -g -std=gnu++17
-  INCLUDES = -IC:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6/QtGui -isystem C:/msys64/mingw64/include/qt6/QtMultimedia -isystem C:/msys64/mingw64/include/qt6/QtNetwork
+  INCLUDES = -IC:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtGui -isystem C:/msys64/mingw64/include/qt6/QtMultimedia -isystem C:/msys64/mingw64/include/qt6/QtNetwork
   OBJECT_DIR = CMakeFiles\PodcastUI.dir
   OBJECT_FILE_DIR = CMakeFiles\PodcastUI.dir
   TARGET_SUPPORT_DIR = CMakeFiles\PodcastUI.dir
@@ -74,7 +74,17 @@ build CMakeFiles/PodcastUI.dir/mainwindow.cpp.obj: CXX_COMPILER__PodcastUI_unsca
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
   DEP_FILE = CMakeFiles\PodcastUI.dir\mainwindow.cpp.obj.d
   FLAGS = -g -std=gnu++17
-  INCLUDES = -IC:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6/QtGui -isystem C:/msys64/mingw64/include/qt6/QtMultimedia -isystem C:/msys64/mingw64/include/qt6/QtNetwork
+  INCLUDES = -IC:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtGui -isystem C:/msys64/mingw64/include/qt6/QtMultimedia -isystem C:/msys64/mingw64/include/qt6/QtNetwork
+  OBJECT_DIR = CMakeFiles\PodcastUI.dir
+  OBJECT_FILE_DIR = CMakeFiles\PodcastUI.dir
+  TARGET_SUPPORT_DIR = CMakeFiles\PodcastUI.dir
+
+build CMakeFiles/PodcastUI.dir/startdialog.cpp.obj: CXX_COMPILER__PodcastUI_unscanned_Debug C$:/Users/gankere/TPU_Workspace/sem4/pract/startdialog.cpp || cmake_object_order_depends_target_PodcastUI
+  CONFIG = Debug
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
+  DEP_FILE = CMakeFiles\PodcastUI.dir\startdialog.cpp.obj.d
+  FLAGS = -g -std=gnu++17
+  INCLUDES = -IC:/Users/gankere/TPU_Workspace/sem4/pract/build/PodcastUI_autogen/include -isystem C:/msys64/mingw64/include/qt6/QtWidgets -isystem C:/msys64/mingw64/include/qt6 -isystem C:/msys64/mingw64/include/qt6/QtCore -isystem C:/msys64/mingw64/share/qt6/mkspecs/win32-g++ -isystem C:/msys64/mingw64/include/qt6/QtGui -isystem C:/msys64/mingw64/include/qt6/QtMultimedia -isystem C:/msys64/mingw64/include/qt6/QtNetwork
   OBJECT_DIR = CMakeFiles\PodcastUI.dir
   OBJECT_FILE_DIR = CMakeFiles\PodcastUI.dir
   TARGET_SUPPORT_DIR = CMakeFiles\PodcastUI.dir
@@ -87,10 +97,10 @@ build CMakeFiles/PodcastUI.dir/mainwindow.cpp.obj: CXX_COMPILER__PodcastUI_unsca
 #############################################
 # Link the executable PodcastUI.exe
 
-build PodcastUI.exe: CXX_EXECUTABLE_LINKER__PodcastUI_Debug CMakeFiles/PodcastUI.dir/PodcastUI_autogen/mocs_compilation.cpp.obj CMakeFiles/PodcastUI.dir/main.cpp.obj CMakeFiles/PodcastUI.dir/mainwindow.cpp.obj | C$:/msys64/mingw64/lib/libQt6Widgets.dll.a C$:/msys64/mingw64/lib/libQt6Multimedia.dll.a C$:/msys64/mingw64/lib/libQt6Gui.dll.a C$:/msys64/mingw64/lib/libQt6Network.dll.a C$:/msys64/mingw64/lib/libQt6Core.dll.a || PodcastUI_autogen PodcastUI_autogen_timestamp_deps
+build PodcastUI.exe: CXX_EXECUTABLE_LINKER__PodcastUI_Debug CMakeFiles/PodcastUI.dir/PodcastUI_autogen/mocs_compilation.cpp.obj CMakeFiles/PodcastUI.dir/main.cpp.obj CMakeFiles/PodcastUI.dir/mainwindow.cpp.obj CMakeFiles/PodcastUI.dir/startdialog.cpp.obj | C$:/msys64/mingw64/lib/libQt6Widgets.dll.a C$:/msys64/mingw64/lib/libQt6Multimedia.dll.a C$:/msys64/mingw64/lib/libQt6Network.dll.a C$:/msys64/mingw64/lib/libQt6Gui.dll.a C$:/msys64/mingw64/lib/libQt6Core.dll.a || PodcastUI_autogen PodcastUI_autogen_timestamp_deps
   CONFIG = Debug
   FLAGS = -g
-  LINK_LIBRARIES = C:/msys64/mingw64/lib/libQt6Widgets.dll.a  C:/msys64/mingw64/lib/libQt6Multimedia.dll.a  C:/msys64/mingw64/lib/libQt6Gui.dll.a  -ld3d11  -ldxgi  -ldxguid  -ld3d12  C:/msys64/mingw64/lib/libQt6Network.dll.a  -lws2_32  C:/msys64/mingw64/lib/libQt6Core.dll.a  -lmpr  -luserenv  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = C:/msys64/mingw64/lib/libQt6Widgets.dll.a  C:/msys64/mingw64/lib/libQt6Multimedia.dll.a  C:/msys64/mingw64/lib/libQt6Network.dll.a  -lws2_32  C:/msys64/mingw64/lib/libQt6Gui.dll.a  -ld3d11  -ldxgi  -ldxguid  -ld3d12  C:/msys64/mingw64/lib/libQt6Core.dll.a  -lmpr  -luserenv  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\PodcastUI.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
