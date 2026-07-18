@@ -1,84 +1,21 @@
 PodcastUI_autogen/timestamp: \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeCXXCompiler.cmake.in \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeCXXCompilerABI.cpp \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeCXXInformation.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeCommonLanguageInclude.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeCompilerIdDetection.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerSupport.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeDetermineRCCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeDetermineSystem.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeFindDependencyMacro.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeGenericSystem.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeInitializeConfigs.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeLanguageInformation.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeNinjaFindMake.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeParseImplicitIncludeInfo.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeParseImplicitLinkInfo.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeParseLibraryArchitecture.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeRCCompiler.cmake.in \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeRCInformation.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeSystem.cmake.in \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeSystemSpecificInformation.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeSystemSpecificInitialize.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeTestCompilerCommon.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CMakeTestRCCompiler.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CheckCXXCompilerFlag.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CheckCXXSourceCompiles.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CheckIncludeFileCXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/CheckLibraryExists.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/ADSP-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/ARMCC-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/ARMClang-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/AppleClang-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Borland-DetermineCompiler.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Clang-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Clang-DetermineCompilerInternal.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Cray-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/CrayClang-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Diab-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Embarcadero-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Fujitsu-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/GHS-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/GNU-CXX-CXXImportStd.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/GNU-CXX.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/GNU-FindBinUtils.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/GNU.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/HP-CXX-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/IAR-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Intel-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/MSVC-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/NVHPC-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/NVIDIA-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/OrangeC-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/PGI-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/PathScale-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Renesas-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/SCO-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/TI-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/TIClang-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Tasking-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/Watcom-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/XL-CXX-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/FindPackageHandleStandardArgs.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/FindPackageMessage.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/FindThreads.cmake \
@@ -86,18 +23,14 @@ PodcastUI_autogen/timestamp: \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/GNUInstallDirs.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Internal/CMakeCXXLinkerInformation.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Internal/CMakeCommonLinkerInformation.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Internal/CMakeDetermineLinkerId.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Internal/CMakeInspectCXXLinker.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Internal/CheckCompilerFlag.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Internal/CheckFlagCommonConfig.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Internal/CheckSourceCompiles.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Internal/FeatureTesting.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Linker/GNU-CXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Linker/GNU.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Linker/GNU.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Linker/Windows-GNU-CXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Linker/Windows-GNU.cmake \
-	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-Determine-CXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-GNU-CXX-ABI.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-GNU-CXX.cmake \
 	C:/Program\ Files/CMake/share/cmake-4.2/Modules/Platform/Windows-GNU.cmake \
@@ -326,6 +259,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtCore/q20utility.h \
 	C:/msys64/mingw64/include/qt6/QtCore/q23type_traits.h \
 	C:/msys64/mingw64/include/qt6/QtCore/q23utility.h \
+	C:/msys64/mingw64/include/qt6/QtCore/qabstractitemmodel.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qalgorithms.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qalloc.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qanystringview.h \
@@ -375,6 +309,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtCore/qlatin1stringview.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qline.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qlist.h \
+	C:/msys64/mingw64/include/qt6/QtCore/qlocale.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qlogging.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qmalloc.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qmap.h \
@@ -395,6 +330,7 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtCore/qprocessordetection.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qrect.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qrefcount.h \
+	C:/msys64/mingw64/include/qt6/QtCore/qregularexpression.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qscopedpointer.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qscopeguard.h \
 	C:/msys64/mingw64/include/qt6/QtCore/qset.h \
@@ -477,29 +413,43 @@ PodcastUI_autogen/timestamp: \
 	C:/msys64/mingw64/include/qt6/QtGui/qtguiexports.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qtguiglobal.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qtransform.h \
+	C:/msys64/mingw64/include/qt6/QtGui/qvalidator.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h \
 	C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h \
+	C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioDevice \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioSource \
+	C:/msys64/mingw64/include/qt6/QtMultimedia/QMediaDevices \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudio.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiodevice.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudioformat.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiosource.h \
+	C:/msys64/mingw64/include/qt6/QtMultimedia/qmediadevices.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qtaudio.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimedia-config.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaexports.h \
 	C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaglobal.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/QComboBox \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QFrame \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QLineEdit \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton \
 	C:/msys64/mingw64/include/qt6/QtWidgets/QTextEdit \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractitemdelegate.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractscrollarea.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractslider.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qabstractspinbox.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qcombobox.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qframe.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qlineedit.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qrubberband.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qslider.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qstyle.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qstyleoption.h \
+	C:/msys64/mingw64/include/qt6/QtWidgets/qtabbar.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qtabwidget.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qtextedit.h \
 	C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgets-config.h \

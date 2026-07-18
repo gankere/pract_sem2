@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     audioSource = nullptr;
     audioDevice = nullptr;
     activeHostTile = nullptr;
+    micDeviceList = nullptr;
+    speakerDeviceList = nullptr;
+    vuTimer = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -259,6 +262,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     middleLay->addWidget(chat);
     root->addWidget(middle, 1);
+    
     // === НИЖНЯЯ ПАНЕЛЬ УПРАВЛЕНИЯ ===
     auto *bottomBar = new QFrame;
     bottomBar->setFixedHeight(70);
@@ -363,6 +367,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         titleLay->addWidget(titleLabel);
 
         auto *deviceList = new QComboBox;
+        
+        // ✅ Сохраняем указатель на ComboBox для дальнейшего использования
+        if (isInput) {
+            micDeviceList = deviceList;
+        } else {
+            speakerDeviceList = deviceList;
+        }
+        
         deviceList->setStyleSheet(
             "QComboBox { "
             "   background-color: #0F0F0F; "
@@ -463,6 +475,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         );
         titleLay->addWidget(volumeSlider);
 
+        // подключение сигнала
         QObject::connect(deviceList, QOverload<int>::of(&QComboBox::currentIndexChanged),
             [this, deviceList, devices, isInput](int index) {
                 if (index >= 0 && index < devices.size()) {
@@ -471,6 +484,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                         isInput ? "audio/inputDevice" : "audio/outputDevice",
                         deviceName
                     );
+                    
+                    // переинициализация захвата
+                    if (isInput) {
+                        restartAudioCapture(devices[index]);
+                    }
                 }
             });
 
@@ -486,7 +504,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         menuAction->setDefaultWidget(titleWidget);
         menu->addAction(menuAction);
 
-        // === Ручное управление меню (ВСЕГДА ВВЕРХ!) ===
+        // === Ручное управление меню ===
         QObject::connect(menuBtn, &QToolButton::clicked, [menu, menuBtn]() {
             if (menu->isVisible()) {
                 menu->hide();
@@ -530,13 +548,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     setCentralWidget(central);
     resize(1100, 750);
-    initMicrophone();
+    initMicrophone();   // Запуск микро после создания UI
 }
 
 MainWindow::~MainWindow()
 {
     if (audioSource) {
         audioSource->stop();
+        delete audioSource;
     }
     saveSettings();
 }
@@ -544,16 +563,52 @@ MainWindow::~MainWindow()
 // Инициализация микрофона и подсветка рамки ведущего при говорении
 void MainWindow::initMicrophone()
 {
-    // Получаем дефолтное устройство ввода
-    QAudioDevice device = QMediaDevices::defaultAudioInput();
-    if (device.isNull()) {
-        qDebug() << "❌ Микрофон не найден!";
+    // доступные микрофоны
+    QList<QAudioDevice> devices = QMediaDevices::audioInputs();
+    if (devices.isEmpty()) {
+        qDebug() << "❌ Микрофоны не найдены!";
         return;
     }
-    
-    qDebug() << "✅ Используем микрофон:" << device.description();
 
-    //формат аудио
+    // сохранённое устройство
+    QString savedDeviceName = settings->value("audio/inputDevice", "").toString();
+    QAudioDevice device;
+    
+    if (!savedDeviceName.isEmpty()) {
+        for (const QAudioDevice &d : devices) {
+            if (d.description() == savedDeviceName) {
+                device = d;
+                qDebug() << "✅ Используем сохранённый микрофон:" << device.description();
+                break;
+            }
+        }
+    }
+    
+    // Если не нашли — берём по умолчанию
+    if (device.isNull()) {
+        device = QMediaDevices::defaultAudioInput();
+        qDebug() << "⚠️ Сохранённый микрофон не найден, используем по умолчанию:" << device.description();
+    }
+    restartAudioCapture(device);
+}
+
+void MainWindow::restartAudioCapture(const QAudioDevice &device)
+{
+    // Останавливаем старый захват
+    if (audioSource) {
+        audioSource->stop();
+        delete audioSource;
+        audioSource = nullptr;
+    }
+    
+    // ✅ ДОБАВЛЕНО: Останавливаем и удаляем старый таймер, чтобы они не конфликтовали
+    if (vuTimer) {
+        vuTimer->stop();
+        delete vuTimer;
+        vuTimer = nullptr;
+    }
+    
+    // Настраиваем формат
     QAudioFormat format;
     format.setSampleRate(16000);
     format.setChannelCount(1);
@@ -567,23 +622,22 @@ void MainWindow::initMicrophone()
     // Создаём источник звука
     audioSource = new QAudioSource(device, format, this);
     audioDevice = audioSource->start();
+    
     if (!audioDevice) {
         qDebug() << "❌ Не удалось запустить захват звука!";
         return;
     }
 
-    qDebug() << "🎙️ Микрофон запущен. Слушаем звук...";
+    qDebug() << "🎙️ Микрофон запущен/переключён на:" << device.description();
 
-    const int SPEAK_THRESHOLD = 15;   // уровень включения подсветки
+    const int SPEAK_THRESHOLD = 1;   // уровень включения подсветки
     const int SILENT_THRESHOLD = 5;   // уровень выключения подсветки
     
     bool isSpeaking = false;  // текущее состояние: говорит / молчит
 
-    // Таймер для периодического чтения данных и обновления рамки
-    QTimer *vuTimer = new QTimer(this);
+    vuTimer = new QTimer(this);
     connect(vuTimer, &QTimer::timeout, this, [this, SPEAK_THRESHOLD, SILENT_THRESHOLD, &isSpeaking]() {
         if (!audioDevice || !audioDevice->bytesAvailable()) {
-
             if (isSpeaking && activeHostTile) {
                 activeHostTile->setStyleSheet(
                     "#hostTile { "
@@ -603,6 +657,7 @@ void MainWindow::initMicrophone()
         int sampleCount = data.size() / sizeof(qint16);
         
         if (sampleCount == 0) return;
+        
         double sumSquares = 0;
         for (int i = 0; i < sampleCount; ++i) {
             double s = samples[i];

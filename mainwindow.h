@@ -8,6 +8,9 @@
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QString>
+#include <QComboBox>
+#include <QMediaDevices>
+#include <QAudioDevice>
 
 struct ChatMessage {
     QString sender;      // кто отправил
@@ -35,6 +38,11 @@ private:
     QAudioSource *audioSource;
     QIODevice *audioDevice;
     QFrame *activeHostTile;
+    QTimer *vuTimer;
+    
+    // ComboBox'ы для устройств
+    QComboBox *micDeviceList;
+    QComboBox *speakerDeviceList;
 
     // Чат
     QTextEdit *chatDisplay;
@@ -44,4 +52,5 @@ private:
     void saveSettings();
     void initMicrophone();
     void addMessageToChat(const ChatMessage &msg);
+    void restartAudioCapture(const QAudioDevice &device);
 };

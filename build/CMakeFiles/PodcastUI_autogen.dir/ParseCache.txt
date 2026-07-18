@@ -216,6 +216,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q20utility.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q23type_traits.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/q23utility.h
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/qabstractitemmodel.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qalgorithms.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qalloc.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qanystringview.h
@@ -265,6 +266,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qlatin1stringview.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qline.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qlist.h
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/qlocale.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qlogging.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qmalloc.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qmap.h
@@ -285,6 +287,7 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qprocessordetection.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qrect.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qrefcount.h
+ mdp:C:/msys64/mingw64/include/qt6/QtCore/qregularexpression.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qscopedpointer.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qscopeguard.h
  mdp:C:/msys64/mingw64/include/qt6/QtCore/qset.h
@@ -367,29 +370,43 @@ C:/Users/gankere/TPU_Workspace/sem4/pract/mainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qtguiexports.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qtguiglobal.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qtransform.h
+ mdp:C:/msys64/mingw64/include/qt6/QtGui/qvalidator.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs.h
  mdp:C:/msys64/mingw64/include/qt6/QtGui/qwindowdefs_win.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioDevice
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/QAudioSource
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/QMediaDevices
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qaudio.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiodevice.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qaudioformat.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qaudiosource.h
+ mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qmediadevices.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtaudio.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimedia-config.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaexports.h
  mdp:C:/msys64/mingw64/include/qt6/QtMultimedia/qtmultimediaglobal.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QComboBox
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QFrame
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QLineEdit
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QMainWindow
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QPushButton
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/QTextEdit
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractbutton.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractitemdelegate.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractscrollarea.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractslider.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qabstractspinbox.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qcombobox.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qframe.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qlineedit.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qmainwindow.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qpushbutton.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qrubberband.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qsizepolicy.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qslider.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qstyle.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qstyleoption.h
+ mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtabbar.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtabwidget.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtextedit.h
  mdp:C:/msys64/mingw64/include/qt6/QtWidgets/qtwidgets-config.h
