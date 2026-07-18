@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     listenersListWidget = nullptr;
     listenersListLayout = nullptr;
     listenersCountLabel = nullptr;
+    meetingName = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -53,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     auto *topLay = new QHBoxLayout(topBar);
     topLay->setContentsMargins(16, 0, 16, 0);
 
-    auto *meetingName = new QLabel("Мини-подкаст: <название подкаста>");
+    meetingName = new QLabel("Мини-подкаст: <название подкаста>");
     meetingName->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 14px; }");
     topLay->addWidget(meetingName);
 
@@ -560,12 +561,10 @@ MainWindow::~MainWindow()
     if (podcastTimer) {
         podcastTimer->stop();
     }
-    // ✅ ДОБАВЛЕНО: очистка аудио-выхода
     if (audioSink) {
         audioSink->stop();
         delete audioSink;
     }
-    // ✅ ДОБАВЛЕНО: очистка таймера
     if (vuTimer) {
         vuTimer->stop();
         delete vuTimer;
@@ -613,8 +612,7 @@ void MainWindow::restartAudioCapture(const QAudioDevice &device)
         delete audioSource;
         audioSource = nullptr;
     }
-    
-    // ✅ ДОБАВЛЕНО: Останавливаем и удаляем старый таймер, чтобы они не конфликтовали
+
     if (vuTimer) {
         vuTimer->stop();
         delete vuTimer;
@@ -889,4 +887,12 @@ void MainWindow::startPodcastTimer()
     podcastStartTime = QTime::currentTime();
     updateDurationDisplay();
     podcastTimer->start(1000); // Обновляем каждую секунду
+}
+
+void MainWindow::setPodcastName(const QString &name)
+{
+    podcastName = name;
+    if (meetingName) {
+        meetingName->setText("Мини-подкаст: " + name);
+    }
 }

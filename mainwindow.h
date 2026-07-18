@@ -29,6 +29,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void setPodcastName(const QString &name);
 
 private slots:
     void openSettings();
@@ -67,6 +68,10 @@ private:
     QLabel *durationLabel;
     QTime podcastStartTime;
     int podcastDurationSeconds;
+
+    // Название подкаста
+    QString podcastName;
+    QLabel *meetingName;
 
     void loadSettings();
     void saveSettings();
