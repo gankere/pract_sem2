@@ -17,6 +17,7 @@
 #include <QSettings>
 #include <QTimer>
 #include <QtMath>
+#include <QAudioSink>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -31,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     micDeviceList = nullptr;
     speakerDeviceList = nullptr;
     vuTimer = nullptr;
+    audioSink = nullptr;
+    audioOutputDevice = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -485,9 +488,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                         deviceName
                     );
                     
-                    // переинициализация захвата
                     if (isInput) {
+                        // переинициализация захвата микрофона
                         restartAudioCapture(devices[index]);
+                    } else {
+                        // ✅ ВОСПРОИЗВЕДЕНИЕ ТЕСТОВОГО ЗВУКА НА НОВЫХ ДИНАМИКАХ
+                        playTestSound(devices[index]);
                     }
                 }
             });
@@ -556,6 +562,16 @@ MainWindow::~MainWindow()
     if (audioSource) {
         audioSource->stop();
         delete audioSource;
+    }
+    // ✅ ДОБАВЛЕНО: очистка аудио-выхода
+    if (audioSink) {
+        audioSink->stop();
+        delete audioSink;
+    }
+    // ✅ ДОБАВЛЕНО: очистка таймера
+    if (vuTimer) {
+        vuTimer->stop();
+        delete vuTimer;
     }
     saveSettings();
 }
@@ -741,4 +757,55 @@ void MainWindow::addMessageToChat(const ChatMessage &msg)
     ).arg(color, msg.sender, msg.text);
 
     chatDisplay->append(html);
+}
+
+void MainWindow::playTestSound(const QAudioDevice &device)
+{
+    if (audioSink) {
+        audioSink->stop();
+        delete audioSink;
+        audioSink = nullptr;
+    }
+
+    QAudioFormat format;
+    format.setSampleRate(44100);
+    format.setChannelCount(1);
+    format.setSampleFormat(QAudioFormat::Int16);
+
+    audioSink = new QAudioSink(device, format, this);
+    audioOutputDevice = audioSink->start();
+
+    if (!audioOutputDevice) {
+        qDebug() << "❌ Не удалось открыть устройство вывода!";
+        return;
+    }
+
+    int sampleRate = format.sampleRate();
+    int durationMs = 400;
+    int sampleCount = (sampleRate * durationMs) / 1000;
+    
+    QByteArray buffer(sampleCount * 2, 0);
+    qint16 *data = reinterpret_cast<qint16*>(buffer.data());
+
+    double amplitude = 9000.0;
+    double frequency = 300.0;
+    const double PI = 3.14159265358979323846;
+
+    for (int i = 0; i < sampleCount; ++i) {
+        double t = (double)i / sampleRate;
+        double progress = (double)i / sampleCount;
+        double signal = qSin(2 * PI * frequency * t) + 0.3 * qSin(2 * PI * frequency * 2.0 * t);
+        double envelope = qSin(PI * progress);
+        data[i] = static_cast<qint16>(signal * envelope * amplitude);
+    }
+
+    audioOutputDevice->write(buffer);
+    
+    QTimer::singleShot(durationMs + 100, this, [this]() {
+        if (audioSink) {
+            audioSink->stop();
+        }
+    });
+    
+    qDebug() << " Буууп>:" << device.description();
 }

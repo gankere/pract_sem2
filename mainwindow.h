@@ -11,6 +11,7 @@
 #include <QComboBox>
 #include <QMediaDevices>
 #include <QAudioDevice>
+#include <QAudioSink>
 
 struct ChatMessage {
     QString sender;      // кто отправил
@@ -34,13 +35,16 @@ private:
     QPushButton *settingsBtn;
     QSettings *settings;
     
-    // Аудио
+    // Аудио (Ввод)
     QAudioSource *audioSource;
     QIODevice *audioDevice;
     QFrame *activeHostTile;
     QTimer *vuTimer;
     
-    // ComboBox'ы для устройств
+    // Аудио (Вывод)
+    QAudioSink *audioSink;
+    QIODevice *audioOutputDevice;
+    
     QComboBox *micDeviceList;
     QComboBox *speakerDeviceList;
 
@@ -53,4 +57,5 @@ private:
     void initMicrophone();
     void addMessageToChat(const ChatMessage &msg);
     void restartAudioCapture(const QAudioDevice &device);
+    void playTestSound(const QAudioDevice &device);
 };
