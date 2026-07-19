@@ -30,6 +30,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void setPodcastName(const QString &name);
+    void setHostName(const QString &name);
 
 private slots:
     void openSettings();
@@ -72,6 +73,7 @@ private:
     // Название подкаста
     QString podcastName;
     QLabel *meetingName;
+    QLabel *host1NameLabel;
 
     void loadSettings();
     void saveSettings();

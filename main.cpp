@@ -6,33 +6,23 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    StartDialog *startDialog = new StartDialog;
+    
+    // Обработка создания комнаты
+    QObject::connect(startDialog, &StartDialog::createRoomRequested,
+        [startDialog](const QString &roomName) {
+            qDebug() << "✅ Комната создана:" << roomName;
 
-    StartDialog startDialog;
-    // Показываем диалог и ждём результата
-    if (startDialog.exec() == QDialog::Accepted) {
-        MainWindow window;
+        });
+    
+    // Обработка присоединения к комнате
+    QObject::connect(startDialog, &StartDialog::joinRoomRequested,
+        [startDialog](const QString &roomCode, const QString &clientName) {
+            qDebug() << " Подключение к комнате:" << roomCode << "как" << clientName;
 
-        // Передаём название подкаста в главное окно (если есть)
-        if (!startDialog.getPodcastName().isEmpty()) {
-            window.setPodcastName(startDialog.getPodcastName());
-        }
-
-        // Заголовок окна — короткий, можно включить имя клиента отдельно
-        QString title = "Мини-подкаст";
-        if (!startDialog.getPodcastName().isEmpty()) {
-            title = "Мини-подкаст: " + startDialog.getPodcastName();
-        }
-        window.setWindowTitle(title);
-        window.show();
-
-        qDebug() << "Имя клиента:" << startDialog.getClientName();
-        qDebug() << "Режим:" << (startDialog.isCreatorMode() ? "Создатель" : "Участник");
-        if (!startDialog.isCreatorMode()) {
-            qDebug() << "Код комнаты:" << startDialog.getRoomCode();
-        }
-
-        return app.exec();
-    }
-
-    return 0;
+        });
+    
+    startDialog->show();
+    
+    return app.exec();
 }

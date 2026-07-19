@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QInputDialog>
 #include <QHBoxLayout>
+#include "mainwindow.h"
 
 StartDialog::StartDialog(QWidget *parent)
     : QDialog(parent), creatorMode(false)
@@ -211,7 +212,7 @@ void StartDialog::onCreateRoomClicked()
 
     layout->addLayout(buttonLayout);
 
-    QObject::connect(okButton, &QPushButton::clicked, [&inputDialog, lineEdit]() {
+    QObject::connect(okButton, &QPushButton::clicked, [&inputDialog, &lineEdit]() {
         if (!lineEdit->text().trimmed().isEmpty()) {
             inputDialog.accept();
         }
@@ -227,11 +228,18 @@ void StartDialog::onCreateRoomClicked()
     if (inputDialog.exec() == QDialog::Accepted) {
         QString podcastName = lineEdit->text().trimmed();
         if (!podcastName.isEmpty()) {
-            this->podcastName = podcastName;
             clientName = nameEdit->text().trimmed();
             creatorMode = true;
             emit createRoomRequested(podcastName);
-            accept();
+
+            MainWindow *mainWindow = new MainWindow;
+            mainWindow->setPodcastName(podcastName);
+            mainWindow->setHostName(clientName);
+            mainWindow->setWindowTitle("Мини-подкаст: " + podcastName);
+            mainWindow->show();
+            
+            nameEdit->clear();
+            errorLabel->clear();
         }
     }
 }
@@ -253,5 +261,13 @@ void StartDialog::onJoinRoomClicked()
     creatorMode = false;
 
     emit joinRoomRequested(roomCode, clientName);
-    accept();
+    
+    MainWindow *mainWindow = new MainWindow;
+    mainWindow->setPodcastName("Комната " + roomCode);
+    mainWindow->setWindowTitle("Мини-подкаст: " + roomCode);
+    mainWindow->show();
+    
+    nameEdit->clear();
+    codeEdit->clear();
+    errorLabel->clear();
 }

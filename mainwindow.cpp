@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     listenersListLayout = nullptr;
     listenersCountLabel = nullptr;
     meetingName = nullptr;
+    host1NameLabel = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -144,6 +145,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         name->setAlignment(Qt::AlignCenter);
         name->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 16px; background-color: transparent; }");
         centerLay->addWidget(name);
+
+        if (i == 0) {
+        host1NameLabel = name;
+        }
         centerLay->addStretch(1);
         
         tl->addWidget(centerWidget, 1);
@@ -185,12 +190,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     stageLay->addWidget(listenersListWidget);
     stageLay->addStretch(1);
     
-    addListener("Слушатель 1");
-    addListener("Слушатель 2");
-    addListener("Слушатель 3");
-    addListener("Слушатель 4");
-    addListener("Слушатель 5");
-
     //Чат справа
     auto *chat = new QFrame;
     chat->setFixedWidth(300);
@@ -894,5 +893,12 @@ void MainWindow::setPodcastName(const QString &name)
     podcastName = name;
     if (meetingName) {
         meetingName->setText("Мини-подкаст: " + name);
+    }
+}
+
+void MainWindow::setHostName(const QString &name)
+{
+    if (host1NameLabel) {
+        host1NameLabel->setText(name);
     }
 }
