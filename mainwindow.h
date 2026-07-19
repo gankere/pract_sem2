@@ -16,6 +16,8 @@
 #include <QLabel>
 #include <QInputDialog>
 #include <QTime> 
+#include <QTcpSocket>
+#include <QJsonObject>
 
 struct ChatMessage {
     QString sender;      // кто отправил
@@ -27,17 +29,23 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(bool isHost = false, QWidget *parent = nullptr);
     ~MainWindow();
     void setPodcastName(const QString &name);
     void setHostName(const QString &name);
+    void addListener(const QString &name);
+    void setRoomCode(const QString &code);
+    void attachSocket(QTcpSocket *sock);
 
 private slots:
     void openSettings();
     void sendMessage();
     void onMessageReceived(const ChatMessage &msg);
+    void onServerDataReceived();
 
 private:
+    bool isHostMode;
+
     QPushButton *settingsBtn;
     QSettings *settings;
     
@@ -74,6 +82,9 @@ private:
     QString podcastName;
     QLabel *meetingName;
     QLabel *host1NameLabel;
+    QLabel *roomCodeLabel;
+
+    QTcpSocket *socket;
 
     void loadSettings();
     void saveSettings();
@@ -83,10 +94,11 @@ private:
     void playTestSound(const QAudioDevice &device);
     
     QWidget* createListenerRow(const QString &name);
-    void addListener(const QString &name);
+    
     void updateListenersCount();
     void showAddListenerDialog();
 
     void updateDurationDisplay();
     void startPodcastTimer();
+
 };

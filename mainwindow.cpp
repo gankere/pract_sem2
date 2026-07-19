@@ -19,7 +19,7 @@
 #include <QtMath>
 #include <QAudioSink>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHostMode(isHost) 
 {
     // Инициализация настроек
     settings = new QSettings("PodcastApp", "MiniPodcast", this);
@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     listenersCountLabel = nullptr;
     meetingName = nullptr;
     host1NameLabel = nullptr;
+    socket = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -58,6 +59,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     meetingName = new QLabel("Мини-подкаст: <название подкаста>");
     meetingName->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 14px; }");
     topLay->addWidget(meetingName);
+
+    roomCodeLabel = new QLabel("Код: ----");
+    roomCodeLabel->setStyleSheet("QLabel { color: #6B6B6B; font-size: 12px; font-family: 'Consolas', monospace; margin-left: 10px; }");
+    topLay->addWidget(roomCodeLabel);   
 
     topLay->addStretch(1);
 
@@ -365,7 +370,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
         auto *deviceList = new QComboBox;
         
-        // ✅ Сохраняем указатель на ComboBox для дальнейшего использования
         if (isInput) {
             micDeviceList = deviceList;
         } else {
@@ -486,7 +490,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                         // переинициализация захвата микрофона
                         restartAudioCapture(devices[index]);
                     } else {
-                        // ✅ ВОСПРОИЗВЕДЕНИЕ ТЕСТОВОГО ЗВУКА НА НОВЫХ ДИНАМИКАХ
                         playTestSound(devices[index]);
                     }
                 }
@@ -523,7 +526,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         return container;
     };
 
-    bottomLay->addWidget(createAudioButtonWithMenu("🎙️", "", true, this));
+    auto *micContainer = createAudioButtonWithMenu("🎙️", "", true, this);
+    
+    // Блокировка микрофона для слушателя
+    if (!isHostMode) {
+        micContainer->setEnabled(false);
+        micContainer->setToolTip("Микрофон доступен только ведущему");
+        micContainer->setStyleSheet(micContainer->styleSheet() + " opacity: 0.5; ");
+    }
+    
+    bottomLay->addWidget(micContainer);
+    
+    // Кнопка динамиков доступна всем
     bottomLay->addWidget(createAudioButtonWithMenu("🔊", "", false, this));
 
     bottomLay->addStretch(1);
@@ -548,7 +562,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     setCentralWidget(central);
     resize(1100, 750);
-    initMicrophone();   // Запуск микро после создания UI
+    
+    if (isHostMode) {
+        initMicrophone();
+    } else {
+        qDebug() << "🔇 Режим слушателя: микрофон полностью отключен на уровне системы.";
+    }
 }
 
 MainWindow::~MainWindow()
@@ -605,20 +624,19 @@ void MainWindow::initMicrophone()
 
 void MainWindow::restartAudioCapture(const QAudioDevice &device)
 {
-    // Останавливаем старый захват
+    // 1. Останавливаем захват
     if (audioSource) {
         audioSource->stop();
         delete audioSource;
         audioSource = nullptr;
     }
-
     if (vuTimer) {
         vuTimer->stop();
         delete vuTimer;
         vuTimer = nullptr;
     }
     
-    // Настраиваем формат
+    // 2. Настраиваем формат
     QAudioFormat format;
     format.setSampleRate(16000);
     format.setChannelCount(1);
@@ -629,7 +647,7 @@ void MainWindow::restartAudioCapture(const QAudioDevice &device)
         format = device.preferredFormat();
     }
 
-    // Создаём источник звука
+    // 3. Создаём источник звука
     audioSource = new QAudioSource(device, format, this);
     audioDevice = audioSource->start();
     
@@ -640,65 +658,83 @@ void MainWindow::restartAudioCapture(const QAudioDevice &device)
 
     qDebug() << "🎙️ Микрофон запущен/переключён на:" << device.description();
 
-    const int SPEAK_THRESHOLD = 1;   // уровень включения подсветки
-    const int SILENT_THRESHOLD = 5;   // уровень выключения подсветки
-    
-    bool isSpeaking = false;  // текущее состояние: говорит / молчит
+    // 4. Настройки порогов
+    const int SPEAK_THRESHOLD = 30;   
+    const int SILENT_THRESHOLD = 10;  
+    bool isSpeaking = false;
 
+    // 5. Таймер анализа звука (20 раз в секунду)
     vuTimer = new QTimer(this);
     connect(vuTimer, &QTimer::timeout, this, [this, SPEAK_THRESHOLD, SILENT_THRESHOLD, &isSpeaking]() {
         if (!audioDevice || !audioDevice->bytesAvailable()) {
             if (isSpeaking && activeHostTile) {
                 activeHostTile->setStyleSheet(
-                    "#hostTile { "
-                    "   background-color: #141414; "
-                    "   border: 3px solid transparent; "
-                    "   border-radius: 10px; "
-                    "}");
+                    "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
                 isSpeaking = false;
+                
+                // Сообщение серверу, что хост замолчал
+                if (socket && socket->isOpen()) { 
+                    QJsonObject msg; 
+                    msg["action"] = "HOST_SPEAKING"; 
+                    msg["status"] = false;
+                    QJsonDocument doc(msg); 
+                    socket->write(doc.toJson(QJsonDocument::Compact)); 
+                    socket->flush();
+                }
             }
             return;
         }
 
         QByteArray data = audioDevice->readAll();
-        
-        // Считаем уровень звука (среднеквадратичное значение)
         const qint16 *samples = reinterpret_cast<const qint16*>(data.constData());
         int sampleCount = data.size() / sizeof(qint16);
-        
         if (sampleCount == 0) return;
-        
+
         double sumSquares = 0;
         for (int i = 0; i < sampleCount; ++i) {
             double s = samples[i];
             sumSquares += s * s;
         }
         double rms = qSqrt(sumSquares / sampleCount);
-        
         int level = qMin(100, static_cast<int>(rms / 327.68));
         
+        // qDebug() << "🎤 Уровень звука:" << level; // для отладки
+
         if (activeHostTile) {
             if (!isSpeaking && level > SPEAK_THRESHOLD) {
                 activeHostTile->setStyleSheet(
-                    "#hostTile { "
-                    "   background-color: #141414; "
-                    "   border: 3px solid #50C878; "
-                    "   border-radius: 10px; "
-                    "}");
+                    "#hostTile { background-color: #141414; border: 3px solid #50C878; border-radius: 10px; }");
                 isSpeaking = true;
-            } else if (isSpeaking && level < SILENT_THRESHOLD) {
+
+                if (socket && socket->isOpen()) { // Хост говорит
+                    QJsonObject msg; 
+                    msg["action"] = "HOST_SPEAKING"; 
+                    msg["status"] = true;
+                    QJsonDocument doc(msg); 
+                    socket->write(doc.toJson(QJsonDocument::Compact)); 
+                    socket->flush();
+                    qDebug() << "📡 Отправлено: Хост начал говорить";
+                }
+            } 
+            else if (isSpeaking && level < SILENT_THRESHOLD) {
                 activeHostTile->setStyleSheet(
-                    "#hostTile { "
-                    "   background-color: #141414; "
-                    "   border: 3px solid transparent; "
-                    "   border-radius: 10px; "
-                    "}");
+                    "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
                 isSpeaking = false;
+
+                if (socket && socket->isOpen()) { //хост замолчал
+                    QJsonObject msg; 
+                    msg["action"] = "HOST_SPEAKING"; 
+                    msg["status"] = false;
+                    QJsonDocument doc(msg); 
+                    socket->write(doc.toJson(QJsonDocument::Compact)); 
+                    socket->flush();
+                    qDebug() << "📡 Отправлено: Хост замолчал";
+                }
             }
         }
     });
     
-    vuTimer->start(50); // Обновляем каждые 50 мс (20 раз в секунду)
+    vuTimer->start(50);
 }
 
 void MainWindow::loadSettings()
@@ -900,5 +936,62 @@ void MainWindow::setHostName(const QString &name)
 {
     if (host1NameLabel) {
         host1NameLabel->setText(name);
+    }
+}
+
+void MainWindow::setRoomCode(const QString &code)
+{
+    if (roomCodeLabel) {
+        roomCodeLabel->setText("Код: " + code);
+    }
+}
+
+void MainWindow::attachSocket(QTcpSocket *sock)
+{
+    socket = sock;
+    if (socket) {
+        connect(socket, &QTcpSocket::readyRead, this, &MainWindow::onServerDataReceived);
+    }
+}
+
+void MainWindow::onServerDataReceived()
+{
+    if (!socket) return;
+    
+    QByteArray data = socket->readAll();
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+    
+    if (parseError.error != QJsonParseError::NoError) return;
+    
+    QJsonObject json = doc.object();
+    QString action = json["action"].toString();
+    
+    if (action == "LISTENER_JOINED") {
+        QString listenerName = json["clientName"].toString();
+        addListener(listenerName);
+    }
+    else if (action == "JOIN_SUCCESS") {
+        QString roomName = json["roomName"].toString();
+        QString hostName = json["hostName"].toString();
+        QString roomCode = json["roomCode"].toString();
+        
+        if (!roomName.isEmpty()) setPodcastName(roomName);
+        if (!hostName.isEmpty()) setHostName(hostName);
+        if (!roomCode.isEmpty()) setRoomCode(roomCode);
+    }
+    // Реакция на речь хоста
+    else if (action == "HOST_SPEAKING") {
+        bool isSpeaking = json["status"].toBool();
+        
+        if (activeHostTile) {
+            if (isSpeaking) {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { background-color: #141414; border: 3px solid #50C878; border-radius: 10px; }");
+            } else {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
+            }
+        }
     }
 }
