@@ -107,4 +107,16 @@ private:
 
     QString myName;
     QLabel *host1Avatar;
+
+    // Состояния заглушения
+    bool isMicMuted = false;
+    bool isSpeakerMuted = false;
+    
+    // Указатели на иконки кнопок для смены эмодзи
+    QPushButton *micIconBtn = nullptr;
+    QPushButton *speakerIconBtn = nullptr;
+
+    // Новые методы
+    void toggleMicMute();
+    void toggleSpeakerMute();
 };

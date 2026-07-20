@@ -305,6 +305,8 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
             "   border-top-right-radius: 0px; "
             "   border-bottom-right-radius: 0px; "
             "   font-size: 18px; "
+            "   padding: 0; "
+            "   margin: 0; "
             "} "
             "QPushButton:hover { "
             "   background-color: #252525; "
@@ -312,9 +314,27 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
             "   border-bottom-left-radius: 10px; "
             "   border-top-right-radius: 0px; "
             "   border-bottom-right-radius: 0px; "
+            "   padding: 0; "
+            "   margin: 0; "
             "}"
         );
         lay->addWidget(iconBtn);
+
+        // Сохраняем указатели на иконки для изменения стиля при заглушении
+        if (isInput) {
+            micIconBtn = iconBtn;
+        } else {
+            speakerIconBtn = iconBtn;
+        }
+
+        // Подключаем клик по иконке к функциям заглушения
+        connect(iconBtn, &QPushButton::clicked, this, [this, isInput]() {
+            if (isInput) {
+                toggleMicMute();
+            } else {
+                toggleSpeakerMute();
+            }
+        });
 
         auto *menu = new QMenu(parent);
         menu->setStyleSheet(
@@ -663,6 +683,15 @@ void MainWindow::restartAudioCapture(const QAudioDevice &device)
     connect(vuTimer, &QTimer::timeout, this, [this, SPEAK_THRESHOLD, SILENT_THRESHOLD, &isSpeaking]() {
         if (!audioDevice || !audioDevice->bytesAvailable()) return;
 
+        // Если микрофон заглушен, гасим рамку и прерываем обработку (аудио не отправляется)
+        if (isMicMuted) {
+            if (activeHostTile) {
+                activeHostTile->setStyleSheet(
+                    "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
+            }
+            return; 
+        }
+
         QByteArray data = audioDevice->readAll();
         const qint16 *samples = reinterpret_cast<const qint16*>(data.constData());
         int sampleCount = data.size() / sizeof(qint16);
@@ -968,6 +997,11 @@ void MainWindow::onServerDataReceived()
             QByteArray pcmData = receiveBuffer.mid(HEADER_SIZE, AUDIO_CHUNK);
             receiveBuffer.remove(0, FULL_SIZE);
 
+            // Если звук заглушен, просто игнорируем пакет и переходим к следующему
+            if (isSpeakerMuted) {
+                continue;
+            }
+
             // Инициализация аудио при первом пакете
             if (!audioSink) {
                 // 1. Пытаемся получить устройство из выбранного в комбобоксе
@@ -1094,4 +1128,94 @@ void MainWindow::onServerDataReceived()
 void MainWindow::setMyName(const QString &name)
 {
     myName = name;
+}
+
+void MainWindow::toggleMicMute()
+{
+    if (!isHostMode) return;
+    
+    isMicMuted = !isMicMuted;
+    
+    if (isMicMuted) {
+        if (micIconBtn) {
+            micIconBtn->setText("🎙️");
+            micIconBtn->setStyleSheet(
+                "QPushButton { "
+                "   background-color: transparent; "
+                "   color: #E8E8E8; "
+                "   border: none; "
+                "   border-right: 1px solid #1F1F1F; "
+                "   border-top-left-radius: 10px; "
+                "   border-bottom-left-radius: 10px; "
+                "   font-size: 16px; "
+                "   opacity: 0.4; "
+                "}"
+            );
+        }
+        qDebug() << "🎙️ Микрофон заглушен";
+    } else {
+        if (micIconBtn) {
+            micIconBtn->setText("🎙️");
+            micIconBtn->setStyleSheet(
+                "QPushButton { "
+                "   background-color: transparent; "
+                "   color: #E8E8E8; "
+                "   border: none; "
+                "   border-right: 1px solid #1F1F1F; "
+                "   border-top-left-radius: 10px; "
+                "   border-bottom-left-radius: 10px; "
+                "   font-size: 22px; "
+                "   opacity: 1.0; "
+                "}"
+                "QPushButton:hover { background-color: #252525; }"
+            );
+        }
+        qDebug() << "🎙️ Микрофон включен";
+    }
+}
+
+void MainWindow::toggleSpeakerMute()
+{
+    isSpeakerMuted = !isSpeakerMuted;
+    
+    if (isSpeakerMuted) {
+        if (speakerIconBtn) {
+            speakerIconBtn->setText("🔇");
+            speakerIconBtn->setStyleSheet(
+                "QPushButton { "
+                "   background-color: transparent; "
+                "   color: #E8E8E8; "
+                "   border: none; "
+                "   border-right: 1px solid #1F1F1F; "
+                "   border-top-left-radius: 10px; "
+                "   border-bottom-left-radius: 10px; "
+                "   font-size: 16px; "
+                "   opacity: 1.0; "
+                "   padding: 0; "
+                "   margin: 0; "
+                "}"
+            );
+        }
+        qDebug() << "🔇 Звук заглушен";
+    } else {
+        if (speakerIconBtn) {
+            speakerIconBtn->setText("🔊");
+            speakerIconBtn->setStyleSheet(
+                "QPushButton { "
+                "   background-color: transparent; "
+                "   color: #E8E8E8; "
+                "   border: none; "
+                "   border-right: 1px solid #1F1F1F; "
+                "   border-top-left-radius: 10px; "
+                "   border-bottom-left-radius: 10px; "
+                "   font-size: 22px; "
+                "   opacity: 1.0; "
+                "   padding: 0; "
+                "   margin: 0; "
+                "}"
+                "QPushButton:hover { background-color: #252525; }"
+            );
+        }
+        qDebug() << "🔊 Звук включен";
+    }
 }
