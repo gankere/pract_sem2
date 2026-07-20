@@ -41,6 +41,7 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
     meetingName = nullptr;
     host1NameLabel = nullptr;
     socket = nullptr;
+    audioOutputDevice = nullptr;
 
     setStyleSheet("QWidget { font-family: 'Segoe UI', Arial; }");
 
@@ -490,6 +491,14 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
                         // переинициализация захвата микрофона
                         restartAudioCapture(devices[index]);
                     } else {
+                        if (audioSink) {
+                            audioSink->stop();
+                            delete audioSink;
+                            audioSink = nullptr;
+                            audioOutputDevice = nullptr;
+                            qDebug() << "🔄 [АУДИО] Устройство вывода изменено, поток будет пересоздан.";
+                        }
+                        
                         playTestSound(devices[index]);
                     }
                 }
@@ -575,17 +584,21 @@ MainWindow::~MainWindow()
     if (audioSource) {
         audioSource->stop();
         delete audioSource;
-    }
-    if (podcastTimer) {
-        podcastTimer->stop();
+        audioSource = nullptr;
     }
     if (audioSink) {
         audioSink->stop();
         delete audioSink;
+        audioSink = nullptr;
+        audioOutputDevice = nullptr;
+    }
+    if (podcastTimer) {
+        podcastTimer->stop();
     }
     if (vuTimer) {
         vuTimer->stop();
         delete vuTimer;
+        vuTimer = nullptr;
     }
     saveSettings();
 }
@@ -624,72 +637,36 @@ void MainWindow::initMicrophone()
 
 void MainWindow::restartAudioCapture(const QAudioDevice &device)
 {
-    // 1. Останавливаем захват
-    if (audioSource) {
-        audioSource->stop();
-        delete audioSource;
-        audioSource = nullptr;
-    }
-    if (vuTimer) {
-        vuTimer->stop();
-        delete vuTimer;
-        vuTimer = nullptr;
-    }
-    
-    // 2. Настраиваем формат
+    if (audioSource) { audioSource->stop(); delete audioSource; audioSource = nullptr; }
+    if (vuTimer)     { vuTimer->stop();     delete vuTimer;     vuTimer = nullptr; }
+
     QAudioFormat format;
     format.setSampleRate(16000);
     format.setChannelCount(1);
     format.setSampleFormat(QAudioFormat::Int16);
 
-    if (!device.isFormatSupported(format)) {
-        qDebug() << "⚠️ Формат не поддерживается, используем дефолтный";
-        format = device.preferredFormat();
-    }
+    if (!device.isFormatSupported(format)) format = device.preferredFormat();
 
-    // 3. Создаём источник звука
     audioSource = new QAudioSource(device, format, this);
     audioDevice = audioSource->start();
-    
-    if (!audioDevice) {
-        qDebug() << "❌ Не удалось запустить захват звука!";
-        return;
-    }
+    if (!audioDevice) { qDebug() << "❌ Не удалось запустить захват звука!"; return; }
 
-    qDebug() << "🎙️ Микрофон запущен/переключён на:" << device.description();
+    qDebug() << "🎙️ Микрофон запущен:" << device.description();
 
-    // 4. Настройки порогов
-    const int SPEAK_THRESHOLD = 30;   
-    const int SILENT_THRESHOLD = 10;  
+    const int SPEAK_THRESHOLD = 30;
+    const int SILENT_THRESHOLD = 15;
     bool isSpeaking = false;
 
-    // 5. Таймер анализа звука (20 раз в секунду)
     vuTimer = new QTimer(this);
     connect(vuTimer, &QTimer::timeout, this, [this, SPEAK_THRESHOLD, SILENT_THRESHOLD, &isSpeaking]() {
-        if (!audioDevice || !audioDevice->bytesAvailable()) {
-            if (isSpeaking && activeHostTile) {
-                activeHostTile->setStyleSheet(
-                    "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
-                isSpeaking = false;
-                
-                // Сообщение серверу, что хост замолчал
-                if (socket && socket->isOpen()) { 
-                    QJsonObject msg; 
-                    msg["action"] = "HOST_SPEAKING"; 
-                    msg["status"] = false;
-                    QJsonDocument doc(msg); 
-                    socket->write(doc.toJson(QJsonDocument::Compact)); 
-                    socket->flush();
-                }
-            }
-            return;
-        }
+        if (!audioDevice || !audioDevice->bytesAvailable()) return;
 
         QByteArray data = audioDevice->readAll();
         const qint16 *samples = reinterpret_cast<const qint16*>(data.constData());
         int sampleCount = data.size() / sizeof(qint16);
         if (sampleCount == 0) return;
 
+        // Расчет громкости
         double sumSquares = 0;
         for (int i = 0; i < sampleCount; ++i) {
             double s = samples[i];
@@ -697,43 +674,43 @@ void MainWindow::restartAudioCapture(const QAudioDevice &device)
         }
         double rms = qSqrt(sumSquares / sampleCount);
         int level = qMin(100, static_cast<int>(rms / 327.68));
-        
-        // qDebug() << "🎤 Уровень звука:" << level; // для отладки
 
+        // VAD управляет ТОЛЬКО UI
         if (activeHostTile) {
             if (!isSpeaking && level > SPEAK_THRESHOLD) {
                 activeHostTile->setStyleSheet(
                     "#hostTile { background-color: #141414; border: 3px solid #50C878; border-radius: 10px; }");
                 isSpeaking = true;
-
-                if (socket && socket->isOpen()) { // Хост говорит
-                    QJsonObject msg; 
-                    msg["action"] = "HOST_SPEAKING"; 
-                    msg["status"] = true;
-                    QJsonDocument doc(msg); 
-                    socket->write(doc.toJson(QJsonDocument::Compact)); 
+                if (socket && socket->isOpen()) {
+                    QJsonObject msg; msg["action"] = "HOST_SPEAKING"; msg["status"] = true;
+                    socket->write(QJsonDocument(msg).toJson(QJsonDocument::Compact));
                     socket->flush();
-                    qDebug() << "📡 Отправлено: Хост начал говорить";
                 }
-            } 
-            else if (isSpeaking && level < SILENT_THRESHOLD) {
+            } else if (isSpeaking && level < SILENT_THRESHOLD) {
                 activeHostTile->setStyleSheet(
                     "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
                 isSpeaking = false;
-
-                if (socket && socket->isOpen()) { //хост замолчал
-                    QJsonObject msg; 
-                    msg["action"] = "HOST_SPEAKING"; 
-                    msg["status"] = false;
-                    QJsonDocument doc(msg); 
-                    socket->write(doc.toJson(QJsonDocument::Compact)); 
+                if (socket && socket->isOpen()) {
+                    QJsonObject msg; msg["action"] = "HOST_SPEAKING"; msg["status"] = false;
+                    socket->write(QJsonDocument(msg).toJson(QJsonDocument::Compact));
                     socket->flush();
-                    qDebug() << "📡 Отправлено: Хост замолчал";
                 }
             }
         }
+
+        // === ОТПРАВКА АУДИО ПОСТОЯННО ===
+        if (isHostMode && socket && socket->isOpen()) {
+            audioBuffer.append(data);
+            const int CHUNK_SIZE = 3200;
+            while (audioBuffer.size() >= CHUNK_SIZE) {
+                QByteArray chunk = audioBuffer.left(CHUNK_SIZE);
+                audioBuffer.remove(0, CHUNK_SIZE);
+                socket->write("AUD:" + chunk);
+                socket->flush();
+            }
+        }
     });
-    
+
     vuTimer->start(50);
 }
 
@@ -791,22 +768,16 @@ void MainWindow::addMessageToChat(const ChatMessage &msg)
 
 void MainWindow::playTestSound(const QAudioDevice &device)
 {
-    if (audioSink) {
-        audioSink->stop();
-        delete audioSink;
-        audioSink = nullptr;
-    }
-
     QAudioFormat format;
     format.setSampleRate(44100);
     format.setChannelCount(1);
     format.setSampleFormat(QAudioFormat::Int16);
 
-    audioSink = new QAudioSink(device, format, this);
-    audioOutputDevice = audioSink->start();
+    QAudioSink *testSink = new QAudioSink(device, format, this);
+    QIODevice *testOutput = testSink->start();
 
-    if (!audioOutputDevice) {
-        qDebug() << "❌ Не удалось открыть устройство вывода!";
+    if (!testOutput) {
+        testSink->deleteLater();
         return;
     }
 
@@ -829,15 +800,17 @@ void MainWindow::playTestSound(const QAudioDevice &device)
         data[i] = static_cast<qint16>(signal * envelope * amplitude);
     }
 
-    audioOutputDevice->write(buffer);
-    
-    QTimer::singleShot(durationMs + 100, this, [this]() {
-        if (audioSink) {
-            audioSink->stop();
+    testOutput->write(buffer);
+
+    QTimer::singleShot(durationMs + 100, this, [testSink, testOutput]() {
+        if (testOutput) testOutput->close();
+        if (testSink) {
+            testSink->stop();
+            testSink->deleteLater();
         }
     });
     
-    qDebug() << " Буууп>:" << device.description();
+    qDebug() << "🔊 Тестовый звук на:" << device.description();
 }
 
 void MainWindow::addListener(const QString &name)
@@ -956,41 +929,134 @@ void MainWindow::attachSocket(QTcpSocket *sock)
 
 void MainWindow::onServerDataReceived()
 {
-    if (!socket) return;
-    
-    QByteArray data = socket->readAll();
-    QJsonParseError parseError;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
-    
-    if (parseError.error != QJsonParseError::NoError) return;
-    
-    QJsonObject json = doc.object();
-    QString action = json["action"].toString();
-    
-    if (action == "LISTENER_JOINED") {
-        QString listenerName = json["clientName"].toString();
-        addListener(listenerName);
-    }
-    else if (action == "JOIN_SUCCESS") {
-        QString roomName = json["roomName"].toString();
-        QString hostName = json["hostName"].toString();
-        QString roomCode = json["roomCode"].toString();
+    if (!socket || !socket->isOpen()) return;
+
+    receiveBuffer.append(socket->readAll());
+
+    while (!receiveBuffer.isEmpty()) {
         
-        if (!roomName.isEmpty()) setPodcastName(roomName);
-        if (!hostName.isEmpty()) setHostName(hostName);
-        if (!roomCode.isEmpty()) setRoomCode(roomCode);
-    }
-    // Реакция на речь хоста
-    else if (action == "HOST_SPEAKING") {
-        bool isSpeaking = json["status"].toBool();
+        // Аудио-пакет
+        if (receiveBuffer.startsWith("AUD:")) {
+            const int HEADER_SIZE = 4;
+            const int AUDIO_CHUNK = 3200;
+            const int FULL_SIZE = HEADER_SIZE + AUDIO_CHUNK;
+
+            if (receiveBuffer.size() < FULL_SIZE) break;
+
+            QByteArray pcmData = receiveBuffer.mid(HEADER_SIZE, AUDIO_CHUNK);
+            receiveBuffer.remove(0, FULL_SIZE);
+
+            // Инициализация аудио при первом пакете
+            if (!audioSink) {
+                // 1. Пытаемся получить устройство из выбранного в комбобоксе
+                QAudioDevice device;
+                if (speakerDeviceList && speakerDeviceList->currentIndex() >= 0) {
+                    int index = speakerDeviceList->currentIndex();
+                    QList<QAudioDevice> devices = QMediaDevices::audioOutputs();
+                    if (index < devices.size()) {
+                        device = devices[index];
+                    }
+                }
+                
+                // 2. Если комбобокс пуст или не выбран, берем системный по умолчанию
+                if (device.isNull()) {
+                    device = QMediaDevices::defaultAudioOutput();
+                }
+
+                QAudioFormat format;
+                format.setSampleRate(16000); 
+                format.setChannelCount(1);
+                format.setSampleFormat(QAudioFormat::Int16);
+
+                if (!device.isFormatSupported(format)) {
+                    qDebug() << "⚠️ [АУДИО] Формат 16кГц не поддерживается, используем дефолтный";
+                    format = device.preferredFormat();
+                }
+
+                audioSink = new QAudioSink(device, format, this);
+                audioOutputDevice = audioSink->start();
+                
+                if (!audioOutputDevice) {
+                    qDebug() << "❌ [АУДИО] Не удалось запустить audioOutputDevice!";
+                } else {
+                    qDebug() << "🔊 [АУДИО] Сетевой поток запущен на устройстве:" << device.description();
+                }
+            }
+
+            if (audioSink && audioOutputDevice) {
+                if (audioSink->state() == QAudio::StoppedState) {
+                    audioOutputDevice = audioSink->start();
+                    qDebug() << "🔄 [АУДИО] Устройство перезапущено после остановки";
+                }
+
+                if (audioOutputDevice->isOpen()) {
+                    qint64 written = audioOutputDevice->write(pcmData);
+                    if (written < 0) {
+                        qDebug() << "❌ [АУДИО] Ошибка записи. Сброс устройства...";
+                        audioSink->stop();
+                        delete audioSink;
+                        audioSink = nullptr;
+                        audioOutputDevice = nullptr;
+                    } else if (written != pcmData.size()) {
+                        qDebug() << "⚠️ [АУДИО] Частичная запись:" << written << "из" << pcmData.size();
+                    }
+                } else {
+                    qDebug() << "⚠️ [АУДИО] Устройство закрыто, пробуем открыть...";
+                    audioOutputDevice = audioSink->start();
+                }
+            }
+            
+            continue;
+        }
+
+        // JSON-сообщение
+        int jsonStart = receiveBuffer.indexOf('{');
         
-        if (activeHostTile) {
-            if (isSpeaking) {
-                activeHostTile->setStyleSheet(
-                    "#hostTile { background-color: #141414; border: 3px solid #50C878; border-radius: 10px; }");
-            } else {
-                activeHostTile->setStyleSheet(
-                    "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
+        if (jsonStart < 0) {
+            if (receiveBuffer.size() > 10000) {
+                qDebug() << "⚠️ [СЕТЬ] Очистка буфера от мусора";
+                receiveBuffer.clear();
+            }
+            break;
+        }
+
+        if (jsonStart > 0) receiveBuffer.remove(0, jsonStart);
+
+        int jsonEnd = receiveBuffer.lastIndexOf('}');
+        if (jsonEnd < 0) break;
+
+        QByteArray jsonData = receiveBuffer.left(jsonEnd + 1);
+        receiveBuffer.remove(0, jsonEnd + 1);
+
+        QJsonParseError parseError;
+        QJsonDocument doc = QJsonDocument::fromJson(jsonData, &parseError);
+        
+        if (parseError.error != QJsonParseError::NoError) {
+            qDebug() << "⚠️ [СЕТЬ] Ошибка JSON:" << parseError.errorString();
+            continue;
+        }
+
+        QJsonObject json = doc.object();
+        QString action = json["action"].toString();
+
+        if (action == "LISTENER_JOINED") {
+            addListener(json["clientName"].toString());
+        } 
+        else if (action == "JOIN_SUCCESS") {
+            if (!json["roomName"].toString().isEmpty()) setPodcastName(json["roomName"].toString());
+            if (!json["hostName"].toString().isEmpty()) setHostName(json["hostName"].toString());
+            if (!json["roomCode"].toString().isEmpty()) setRoomCode(json["roomCode"].toString());
+        } 
+        else if (action == "HOST_SPEAKING") {
+            bool isSpeaking = json["status"].toBool();
+            if (activeHostTile) {
+                if (isSpeaking) {
+                    activeHostTile->setStyleSheet(
+                        "#hostTile { background-color: #141414; border: 3px solid #50C878; border-radius: 10px; }");
+                } else {
+                    activeHostTile->setStyleSheet(
+                        "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
+                }
             }
         }
     }

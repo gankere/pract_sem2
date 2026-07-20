@@ -326,12 +326,18 @@ void StartDialog::onServerResponse()
         mainWindow->setPodcastName(name);
         mainWindow->setHostName(clientName);
         mainWindow->setRoomCode(code);
+        
+        // сокет в MainWindow
         mainWindow->attachSocket(socket);
         
+        // право владения сокетом окну MainWindow
+        socket->setParent(mainWindow);
+        
+        // новый сокет
         socket = new QTcpSocket(this);
-        connect(this->socket, &QTcpSocket::readyRead, this, &StartDialog::onServerResponse);
-        connect(this->socket, &QTcpSocket::connected, this, &StartDialog::onConnected);
-        this->socket->connectToHost("127.0.0.1", 9999);
+        connect(socket, &QTcpSocket::readyRead, this, &StartDialog::onServerResponse);
+        connect(socket, &QTcpSocket::connected, this, &StartDialog::onConnected);
+        socket->connectToHost("127.0.0.1", 9999);
         
         mainWindow->setWindowTitle("Мини-подкаст: " + name);
         mainWindow->show();
@@ -348,12 +354,15 @@ void StartDialog::onServerResponse()
         mainWindow->setPodcastName(name);
         mainWindow->setHostName(hostName);
         mainWindow->setRoomCode(code);
+        
         mainWindow->attachSocket(socket);
         
+        socket->setParent(mainWindow);
+    
         socket = new QTcpSocket(this);
-        connect(this->socket, &QTcpSocket::readyRead, this, &StartDialog::onServerResponse);
-        connect(this->socket, &QTcpSocket::connected, this, &StartDialog::onConnected);
-        this->socket->connectToHost("127.0.0.1", 9999);
+        connect(socket, &QTcpSocket::readyRead, this, &StartDialog::onServerResponse);
+        connect(socket, &QTcpSocket::connected, this, &StartDialog::onConnected);
+        socket->connectToHost("127.0.0.1", 9999);
         
         mainWindow->addListener(clientName);
         mainWindow->setWindowTitle("Мини-подкаст: " + name);
@@ -363,10 +372,8 @@ void StartDialog::onServerResponse()
         codeEdit->clear();
         errorLabel->clear();
     }
-    
     else if (action == "JOIN_FAILED") {
         QString message = json["message"].toString();
         errorLabel->setText("⚠️ " + message);
     }
 }
-

@@ -101,4 +101,6 @@ private:
     void updateDurationDisplay();
     void startPodcastTimer();
 
+    QByteArray receiveBuffer;
+    QByteArray audioBuffer;
 };
