@@ -50,4 +50,6 @@ private:
     QMap<QString, RoomInfo> rooms;
     QMap<QTcpSocket*, QString> socketToRoom;
     QMap<QTcpSocket*, QString> socketToName;
+
+    QHash<QTcpSocket*, QByteArray> socketBuffers;
 };

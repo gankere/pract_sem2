@@ -323,6 +323,7 @@ void StartDialog::onServerResponse()
         QString name = json["roomName"].toString();
         
         MainWindow *mainWindow = new MainWindow(true, nullptr); 
+        mainWindow->setMyName(clientName);
         mainWindow->setPodcastName(name);
         mainWindow->setHostName(clientName);
         mainWindow->setRoomCode(code);
@@ -351,6 +352,7 @@ void StartDialog::onServerResponse()
         QString hostName = json["hostName"].toString();
         
         MainWindow *mainWindow = new MainWindow(false, nullptr);
+        mainWindow->setMyName(clientName);
         mainWindow->setPodcastName(name);
         mainWindow->setHostName(hostName);
         mainWindow->setRoomCode(code);

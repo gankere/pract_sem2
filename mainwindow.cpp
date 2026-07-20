@@ -735,13 +735,23 @@ void MainWindow::sendMessage()
     QString text = chatInput->text().trimmed();
     if (text.isEmpty()) return;
 
+    // 1. Отображаем у себя сразу, используя реальное имя
     ChatMessage msg;
-    msg.sender = "Вы";
+    msg.sender = myName.isEmpty() ? "Вы" : myName; 
     msg.text = text;
     msg.isLocal = true;
-
     addMessageToChat(msg);
     chatInput->clear();
+
+    // 2. Отправление сообщения на сервер
+    if (socket && socket->isOpen()) {
+        QJsonObject chatJson;
+        chatJson["action"] = "CHAT_MESSAGE";
+        chatJson["sender"] = msg.sender;
+        chatJson["text"] = text;
+        socket->write(QJsonDocument(chatJson).toJson(QJsonDocument::Compact));
+        socket->flush();
+    }
 
     qDebug() << "[CHAT] Отправлено:" << text;
 }
@@ -754,7 +764,9 @@ void MainWindow::onMessageReceived(const ChatMessage &msg)
 
 void MainWindow::addMessageToChat(const ChatMessage &msg)
 {
-    QString color = msg.isLocal ? "#B5656B" : "#50C878";
+    // Локальный пользователь: фирменный цвет #B5656B
+    // Удаленные пользователи: ЛИЛОВЫЙ #9B59B6 (вместо зелёного)
+    QString color = msg.isLocal ? "#B5656B" : "#9B59B6"; 
     
     QString html = QString(
         "<div style='margin-bottom: 8px; line-height: 1.4;'>"
@@ -1059,5 +1071,17 @@ void MainWindow::onServerDataReceived()
                 }
             }
         }
+        else if (action == "CHAT_MESSAGE") {
+            ChatMessage msg;
+            msg.sender = json["sender"].toString();
+            msg.text = json["text"].toString();
+            msg.isLocal = false; // Сообщение пришло от другого участника сети
+            addMessageToChat(msg);
+        }
     }
+}
+
+void MainWindow::setMyName(const QString &name)
+{
+    myName = name;
 }

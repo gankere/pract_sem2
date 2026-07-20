@@ -202,6 +202,18 @@ void PodcastServer::onReadyRead()
                 }
             }
         }
+        else if (action == "CHAT_MESSAGE") {
+            QString roomCode = socketToRoom.value(socket);
+            if (!roomCode.isEmpty()) {
+                // Рассылаем сообщение всем в комнате, кроме отправителя 
+                QJsonObject update = json;
+                broadcastToRoom(roomCode, update, socket);
+                
+                qDebug() << "💬 [СЕРВЕР] Чат: '" << json["text"].toString() 
+                         << "' от " << json["sender"].toString() 
+                         << " в комнате " << roomCode;
+            }
+        }
     }
 }
 

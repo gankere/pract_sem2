@@ -36,6 +36,7 @@ public:
     void addListener(const QString &name);
     void setRoomCode(const QString &code);
     void attachSocket(QTcpSocket *sock);
+    void setMyName(const QString &name);
 
 private slots:
     void openSettings();
@@ -103,4 +104,6 @@ private:
 
     QByteArray receiveBuffer;
     QByteArray audioBuffer;
+
+    QString myName;
 };
