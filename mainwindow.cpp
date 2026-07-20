@@ -135,7 +135,7 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
         centerLay->setContentsMargins(0, 0, 0, 0);
         centerLay->setSpacing(8);
         centerLay->addStretch(1);
-        auto *avatar = new QLabel(i == 0 ? "А" : "М");
+        auto *avatar = new QLabel();
         avatar->setFixedSize(100, 100);
         avatar->setAlignment(Qt::AlignCenter);
         avatar->setStyleSheet(
@@ -147,13 +147,15 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
             "   font-weight: bold; "
             "}");
         centerLay->addWidget(avatar, 0, Qt::AlignHCenter);
+        
         auto *name = new QLabel(i == 0 ? "Анна" : "Анастасия");
         name->setAlignment(Qt::AlignCenter);
         name->setStyleSheet("QLabel { color: #E8E8E8; font-weight: bold; font-size: 16px; background-color: transparent; }");
         centerLay->addWidget(name);
 
         if (i == 0) {
-        host1NameLabel = name;
+            host1Avatar = avatar; // указатель на аватарку хоста
+            host1NameLabel = name;
         }
         centerLay->addStretch(1);
         
@@ -921,6 +923,14 @@ void MainWindow::setHostName(const QString &name)
 {
     if (host1NameLabel) {
         host1NameLabel->setText(name);
+    }
+    
+    // Обновляем аватарку хоста первой буквой имени
+    if (host1Avatar && !name.trimmed().isEmpty()) {
+        QChar firstChar = name.trimmed()[0];
+        host1Avatar->setText(QString(firstChar).toUpper());
+    } else if (host1Avatar) {
+        host1Avatar->setText("А");
     }
 }
 

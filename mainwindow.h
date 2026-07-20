@@ -106,4 +106,5 @@ private:
     QByteArray audioBuffer;
 
     QString myName;
+    QLabel *host1Avatar;
 };
