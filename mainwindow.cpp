@@ -74,15 +74,11 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
     topLay->addWidget(durationLabel);
     
     podcastTimer = new QTimer(this);
-    podcastStartTime = QTime::currentTime();
-    podcastDurationSeconds = 0;
+    podcastStartTimeSecs = 0;
     
     connect(podcastTimer, &QTimer::timeout, this, [this]() {
-        podcastDurationSeconds++;
         updateDurationDisplay();
     });
-    
-    startPodcastTimer();    // Запуск таймера при старте
 
     topLay->addSpacing(12);
 
@@ -913,9 +909,19 @@ void MainWindow::showAddListenerDialog()
 
 void MainWindow::updateDurationDisplay()
 {
-    int hours = podcastDurationSeconds / 3600;
-    int minutes = (podcastDurationSeconds % 3600) / 60;
-    int seconds = podcastDurationSeconds % 60;
+    if (podcastStartTimeSecs == 0) {
+        durationLabel->setText("00:00");
+        return;
+    }
+
+    // Подсчёт разницы в секундах от момента создания комнаты
+    qint64 currentSecs = QDateTime::currentSecsSinceEpoch();
+    int totalSeconds = currentSecs - podcastStartTimeSecs;
+    if (totalSeconds < 0) totalSeconds = 0;
+
+    int hours = totalSeconds / 3600;
+    int minutes = (totalSeconds % 3600) / 60;
+    int seconds = totalSeconds % 60;
     
     QString timeString;
     if (hours > 0) {
@@ -934,10 +940,10 @@ void MainWindow::updateDurationDisplay()
 
 void MainWindow::startPodcastTimer()
 {
-    podcastDurationSeconds = 0;
-    podcastStartTime = QTime::currentTime();
     updateDurationDisplay();
-    podcastTimer->start(1000); // Обновляем каждую секунду
+    if (!podcastTimer->isActive()) {
+        podcastTimer->start(1000);
+    }
 }
 
 void MainWindow::setPodcastName(const QString &name)
@@ -1102,6 +1108,11 @@ void MainWindow::onServerDataReceived()
             if (!json["roomName"].toString().isEmpty()) setPodcastName(json["roomName"].toString());
             if (!json["hostName"].toString().isEmpty()) setHostName(json["hostName"].toString());
             if (!json["roomCode"].toString().isEmpty()) setRoomCode(json["roomCode"].toString());
+
+            if (json.contains("startTime")) {
+                podcastStartTimeSecs = json["startTime"].toVariant().toLongLong();
+                startPodcastTimer();
+            }
         } 
         else if (action == "HOST_SPEAKING") {
             bool isSpeaking = json["status"].toBool();

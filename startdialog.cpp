@@ -327,7 +327,13 @@ void StartDialog::onServerResponse()
         mainWindow->setPodcastName(name);
         mainWindow->setHostName(clientName);
         mainWindow->setRoomCode(code);
-        
+
+        if (json.contains("startTime")) {
+            mainWindow->setPodcastStartTime(json["startTime"].toVariant().toLongLong());
+        } else {
+            mainWindow->setPodcastStartTime(QDateTime::currentSecsSinceEpoch());
+        }
+
         // сокет в MainWindow
         mainWindow->attachSocket(socket);
         
@@ -357,6 +363,12 @@ void StartDialog::onServerResponse()
         mainWindow->setHostName(hostName);
         mainWindow->setRoomCode(code);
         
+        if (json.contains("startTime")) {
+            mainWindow->setPodcastStartTime(json["startTime"].toVariant().toLongLong());
+        } else {
+            mainWindow->setPodcastStartTime(QDateTime::currentSecsSinceEpoch());
+        }
+
         mainWindow->attachSocket(socket);
         
         socket->setParent(mainWindow);

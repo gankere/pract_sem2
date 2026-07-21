@@ -37,6 +37,10 @@ public:
     void setRoomCode(const QString &code);
     void attachSocket(QTcpSocket *sock);
     void setMyName(const QString &name);
+    void setPodcastStartTime(qint64 secs) { 
+        podcastStartTimeSecs = secs; 
+        startPodcastTimer(); 
+    }
 
 private slots:
     void openSettings();
@@ -76,8 +80,7 @@ private:
     // Таймер подкаста
     QTimer *podcastTimer;
     QLabel *durationLabel;
-    QTime podcastStartTime;
-    int podcastDurationSeconds;
+    qint64 podcastStartTimeSecs = 0;
 
     // Название подкаста
     QString podcastName;

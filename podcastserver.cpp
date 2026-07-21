@@ -126,6 +126,7 @@ void PodcastServer::onReadyRead()
             RoomInfo room;
             room.roomName = roomName;
             room.hostName = hostName;
+            room.startTime = QDateTime::currentSecsSinceEpoch();
             rooms[roomCode] = room;
             
             ClientInfo hostClient;
@@ -143,6 +144,7 @@ void PodcastServer::onReadyRead()
             response["roomCode"] = roomCode;
             response["roomName"] = roomName;
             response["hostName"] = hostName;
+            response["startTime"] = room.startTime;
             sendMessage(socket, response);
             
             emit roomCreated(roomCode, roomName);
@@ -168,6 +170,7 @@ void PodcastServer::onReadyRead()
                 response["roomCode"] = roomCode;
                 response["roomName"] = rooms[roomCode].roomName;
                 response["hostName"] = rooms[roomCode].hostName;
+                response["startTime"] = rooms[roomCode].startTime;
                 sendMessage(socket, response);
                 
                 QJsonObject update;

@@ -10,6 +10,7 @@
 struct RoomInfo {
     QString roomName;
     QString hostName;
+    qint64 startTime;
     QList<struct ClientInfo> clients;
 };
 
