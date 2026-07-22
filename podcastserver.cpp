@@ -1,6 +1,7 @@
 #include "podcastserver.h"
 #include <QDebug>
 #include <QRandomGenerator>
+#include <QJsonArray>
 
 PodcastServer::PodcastServer(QObject *parent) 
     : QObject(parent), tcpServer(new QTcpServer(this)), roomCounter(0)
@@ -154,7 +155,21 @@ void PodcastServer::onReadyRead()
             QString roomCode = json["roomCode"].toString();
             QString clientName = json["clientName"].toString();
             
-            if (rooms.contains(roomCode)) {
+            if (rooms.contains(roomCode)) { // лимит слушателей на сервере
+                int currentListeners = 0;
+                for (const ClientInfo &c : rooms[roomCode].clients) {
+                    if (!c.isHost) currentListeners++;
+                }
+                
+                if (currentListeners >= 6) {
+                    QJsonObject response;
+                    response["action"] = "JOIN_FAILED";
+                    response["message"] = "Комната переполнена (максимум 6 слушателей)";
+                    sendMessage(socket, response);
+                    qDebug() << "❌ Отказано во входе:" << clientName << "- комната переполнена";
+                    return;
+                }
+
                 ClientInfo client;
                 client.socket = socket;
                 client.name = clientName;
@@ -165,6 +180,7 @@ void PodcastServer::onReadyRead()
                 socketToRoom[socket] = roomCode;
                 socketToName[socket] = clientName;
                 
+                // Отправка информации о комнате новым участникам
                 QJsonObject response;
                 response["action"] = "JOIN_SUCCESS";
                 response["roomCode"] = roomCode;
@@ -172,6 +188,7 @@ void PodcastServer::onReadyRead()
                 response["hostName"] = rooms[roomCode].hostName;
                 response["startTime"] = rooms[roomCode].startTime;
                 sendMessage(socket, response);
+                qDebug() << "📤 Отправлено JOIN_SUCCESS клиенту" << clientName;
                 
                 QJsonObject update;
                 update["action"] = "LISTENER_JOINED";
@@ -180,6 +197,7 @@ void PodcastServer::onReadyRead()
                 
                 emit clientJoined(roomCode, clientName);
                 qDebug() << "👤 Слушатель" << clientName << "вошёл в комнату" << roomCode;
+                syncListeners(roomCode);
             } else {
                 QJsonObject response;
                 response["action"] = "JOIN_FAILED";
@@ -199,7 +217,7 @@ void PodcastServer::onReadyRead()
                 broadcastToRoom(roomCode, update, nullptr);
                 
                 if (status) {
-                    qDebug() << "🎙️ Хост в комнате" << roomCode << "начал говорить";
+                    qDebug() << "️ Хост в комнате" << roomCode << "начал говорить";
                 } else {
                     qDebug() << "🔇 Хост в комнате" << roomCode << "замолчал";
                 }
@@ -217,7 +235,84 @@ void PodcastServer::onReadyRead()
                          << " в комнате " << roomCode;
             }
         }
+        else if (action == "PROMOTE_TO_HOST") {
+            QString roomCode = socketToRoom.value(socket);
+            QString targetName = json["targetName"].toString();
+            //Замена ведущего
+            if (!roomCode.isEmpty() && rooms.contains(roomCode)) {
+                auto &room = rooms[roomCode];
+                QString oldHostName;
+                bool found = false;
+                
+                // 1. Ищем текущего второго ведущего (если есть)
+                for (auto &client : room.clients) {
+                    if (client.isHost && client.name != room.hostName) {
+                        oldHostName = client.name;
+                        client.isHost = false;  // Ведущий становится слушателем
+                        qDebug() << "⬇️ [СЕРВЕР]" << oldHostName << "понижен до слушателя";
+                        break;
+                    }
+                }
+                
+                // 2. Находим целевого слушателя и делаем его ведущим
+                for (auto &client : room.clients) {
+                    if (client.name == targetName && !client.isHost) {
+                        client.isHost = true;
+                        found = true;
+                        qDebug() << "⬆️ [СЕРВЕР]" << targetName << "повышен до второго ведущего";
+                        break;
+                    }
+                }
+                
+                if (found) {
+                    // 3. Оповещаем всех в комнате
+                    QJsonObject update;
+                    update["action"] = "USER_PROMOTED";
+                    update["newHostName"] = targetName;
+                    update["oldHostName"] = oldHostName;
+                    broadcastToRoom(roomCode, update, nullptr);
+                    
+                    qDebug() << "👑 [СЕРВЕР]" << targetName << "стал вторым ведущим вместо" 
+                             << (oldHostName.isEmpty() ? "пустого слота" : oldHostName) 
+                             << "в комнате" << roomCode;
+                    syncListeners(roomCode);
+                }
+            }
+        }
+        else if (action == "REQUEST_LISTENERS") {
+            QString roomCode = json["roomCode"].toString();
+            if (rooms.contains(roomCode)) {
+                QJsonArray listenerNames; // актуальный список слушателей
+                for (const ClientInfo &client : rooms[roomCode].clients) {
+                    if (!client.isHost) {
+                        listenerNames.append(client.name);
+                    }
+                }
+                
+                QJsonObject syncMsg;
+                syncMsg["action"] = "SYNC_LISTENERS";
+                syncMsg["listeners"] = listenerNames;
+                sendMessage(socket, syncMsg);
+            }
+        }
     }
+}
+void PodcastServer::syncListeners(const QString &roomCode)
+{
+    if (!rooms.contains(roomCode)) return;
+    
+    QJsonArray listenerNames;
+    for (const ClientInfo &client : rooms[roomCode].clients) {
+        if (!client.isHost) {
+            listenerNames.append(client.name);
+        }
+    }
+    
+    QJsonObject syncMsg;
+    syncMsg["action"] = "SYNC_LISTENERS";
+    syncMsg["listeners"] = listenerNames;
+    
+    broadcastToRoom(roomCode, syncMsg, nullptr);
 }
 
 void PodcastServer::onDisconnected()
@@ -254,6 +349,7 @@ void PodcastServer::removeClient(QTcpSocket *socket)
     socketToName.remove(socket);
     
     qDebug() << "👋 Клиент отключился:" << clientName;
+    syncListeners(roomCode);
 }
 
 void PodcastServer::sendMessage(QTcpSocket *socket, const QJsonObject &message)
@@ -261,6 +357,7 @@ void PodcastServer::sendMessage(QTcpSocket *socket, const QJsonObject &message)
     if (socket && socket->isOpen()) {
         QJsonDocument doc(message);
         socket->write(doc.toJson(QJsonDocument::Compact));
+        socket->write("\n");
         socket->flush();
     }
 }
@@ -271,6 +368,7 @@ void PodcastServer::broadcastToRoom(const QString &roomCode, const QJsonObject &
     
     QJsonDocument doc(message);
     QByteArray data = doc.toJson(QJsonDocument::Compact);
+    data.append("\n");
     
     for (const ClientInfo &client : rooms[roomCode].clients) {
         if (client.socket && client.socket != excludeSocket && client.socket->isOpen()) {

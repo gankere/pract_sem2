@@ -45,6 +45,7 @@ private:
     void sendMessage(QTcpSocket *socket, const QJsonObject &message);
     void broadcastToRoom(const QString &roomCode, const QJsonObject &message, QTcpSocket *excludeSocket = nullptr);
     void removeClient(QTcpSocket *socket);
+    void syncListeners(const QString &roomCode);
     int roomCounter;
 
     QTcpServer *tcpServer;

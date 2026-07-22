@@ -18,6 +18,7 @@
 #include <QTimer>
 #include <QtMath>
 #include <QAudioSink>
+#include <QJsonArray>
 
 MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHostMode(isHost) 
 {
@@ -150,9 +151,19 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
         centerLay->addWidget(name);
 
         if (i == 0) {
-            host1Avatar = avatar; // указатель на аватарку хоста
+            activeHostTile = tile;
+            host1Avatar = avatar;
             host1NameLabel = name;
+        } else {
+            host2Tile = tile;
+            host2Avatar = avatar;
+            host2NameLabel = name;
+            
+            host2Tile->setVisible(false);
+            host2NameLabel->setText("Ожидание...");
+            host2Avatar->setText("?");
         }
+
         centerLay->addStretch(1);
         
         tl->addWidget(centerWidget, 1);
@@ -553,16 +564,15 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
         return container;
     };
 
-    auto *micContainer = createAudioButtonWithMenu("🎙️", "", true, this);
+    micContainerWidget = createAudioButtonWithMenu("🎙️", "", true, this);
     
     // Блокировка микрофона для слушателя
     if (!isHostMode) {
-        micContainer->setEnabled(false);
-        micContainer->setToolTip("Микрофон доступен только ведущему");
-        micContainer->setStyleSheet(micContainer->styleSheet() + " opacity: 0.5; ");
+        micContainerWidget->setEnabled(false);
+        micContainerWidget->setToolTip("Микрофон доступен только ведущему");
+        micContainerWidget->setStyleSheet(micContainerWidget->styleSheet() + " opacity: 0.5; ");
     }
-    
-    bottomLay->addWidget(micContainer);
+    bottomLay->addWidget(micContainerWidget);
     
     // Кнопка динамиков доступна всем
     bottomLay->addWidget(createAudioButtonWithMenu("🔊", "", false, this));
@@ -620,6 +630,74 @@ MainWindow::~MainWindow()
     }
     saveSettings();
 }
+// Назначение второго ведущего (кнопка)
+ListenerRowWidget::ListenerRowWidget(const QString &name, bool isHostMode, QWidget *parent)
+    : QWidget(parent), listenerName(name), promoteBtn(nullptr)
+{
+    setStyleSheet("QWidget { background-color: transparent; }");
+    auto *lay = new QHBoxLayout(this);
+    lay->setContentsMargins(0, 2, 0, 2);
+    lay->setSpacing(6);
+    
+    auto *crownSpacer = new QWidget;
+    crownSpacer->setFixedSize(28, 28);
+    lay->addWidget(crownSpacer);
+    
+    if (isHostMode) {
+        promoteBtn = new QPushButton("👑");
+        promoteBtn->setFixedSize(28, 28);
+        promoteBtn->setToolTip("Сделать вторым ведущим");
+        promoteBtn->setVisible(false);
+        promoteBtn->setStyleSheet(
+            "QPushButton { "
+            "   background-color: transparent; "
+            "   border: none; "
+            "   border-radius: 4px; "
+            "   font-size: 16px; "
+            "} "
+            "QPushButton:hover { background-color: #2A2A2A; }"
+        );
+        
+        connect(promoteBtn, &QPushButton::clicked, this, [this]() {
+            emit promoteRequested(listenerName);
+        });
+        
+        promoteBtn->setParent(this);
+        promoteBtn->move(0, 2);
+    }
+    
+    auto *nameLabel = new QLabel(name);
+    nameLabel->setStyleSheet( 
+        "QLabel { "
+        "   color: #8A8A8A; "
+        "   font-size: 13px; "
+        "   font-weight: 500; "
+        "   font-family: 'Segoe UI', Arial, sans-serif; "  
+        "}"
+    );
+    lay->addWidget(nameLabel, 1);
+}
+
+void ListenerRowWidget::enterEvent(QEnterEvent *event)
+{
+    QWidget::enterEvent(event);
+    if (promoteBtn) {
+        promoteBtn->setVisible(true);
+        promoteBtn->raise();
+    }
+}
+
+void ListenerRowWidget::leaveEvent(QEvent *event)
+{
+    QWidget::leaveEvent(event);
+    if (promoteBtn) {
+        promoteBtn->setVisible(false);
+    }
+}
+
+ListenerRowWidget::~ListenerRowWidget() {
+}
+
 
 // Инициализация микрофона и подсветка рамки ведущего при говорении
 void MainWindow::initMicrophone()
@@ -709,7 +787,10 @@ void MainWindow::restartAudioCapture(const QAudioDevice &device)
                     "#hostTile { background-color: #141414; border: 3px solid #50C878; border-radius: 10px; }");
                 isSpeaking = true;
                 if (socket && socket->isOpen()) {
-                    QJsonObject msg; msg["action"] = "HOST_SPEAKING"; msg["status"] = true;
+                    QJsonObject msg;
+                    msg["action"] = "HOST_SPEAKING";
+                    msg["status"] = true;
+                    msg["senderName"] = myName;
                     socket->write(QJsonDocument(msg).toJson(QJsonDocument::Compact));
                     socket->flush();
                 }
@@ -867,25 +948,25 @@ void MainWindow::addListener(const QString &name)
 
 QWidget* MainWindow::createListenerRow(const QString &name)
 {
-    auto *row = new QWidget;
-    row->setStyleSheet("QWidget { background-color: transparent; }");
-    auto *lay = new QHBoxLayout(row);
-
-    lay->setContentsMargins(8, 2, 0, 0); 
-    lay->setSpacing(0);
-    
-    auto *nameLabel = new QLabel(name);
-    nameLabel->setStyleSheet( 
-        "QLabel { "
-        "   color: #8A8A8A; "
-        "   font-size: 13px; "
-        "   font-weight: 500; "
-        "   font-family: 'Segoe UI', Arial, sans-serif; "  
-        "}"
-    );
-    lay->addWidget(nameLabel, 1);
+    ListenerRowWidget *row = new ListenerRowWidget(name, isHostMode, this);
+    connect(row, &ListenerRowWidget::promoteRequested, this, &MainWindow::promoteToHost);
+    listenerWidgets[name] = row;
     return row;
 }
+
+void MainWindow::promoteToHost(const QString &listenerName)
+{
+    if (!isHostMode || !socket || !socket->isOpen()) return;
+    
+    QJsonObject msg;
+    msg["action"] = "PROMOTE_TO_HOST";
+    msg["targetName"] = listenerName;
+    socket->write(QJsonDocument(msg).toJson(QJsonDocument::Compact));
+    socket->flush();
+    
+    qDebug() << "👑 [СЕТЬ] Запрос на повышение:" << listenerName;
+}
+
 void MainWindow::updateListenersCount()
 {
     if (listenersCountLabel) {
@@ -981,6 +1062,17 @@ void MainWindow::attachSocket(QTcpSocket *sock)
     socket = sock;
     if (socket) {
         connect(socket, &QTcpSocket::readyRead, this, &MainWindow::onServerDataReceived);
+        QString code = roomCodeLabel->text();// список присутствующих слушателей
+        if (code.startsWith("Код: ")) {
+            code = code.mid(5);
+            if (!code.isEmpty() && code != "----") {
+                QJsonObject request;
+                request["action"] = "REQUEST_LISTENERS";
+                request["roomCode"] = code;
+                socket->write(QJsonDocument(request).toJson(QJsonDocument::Compact));
+                socket->flush();
+            }
+        }
     }
 }
 
@@ -991,26 +1083,24 @@ void MainWindow::onServerDataReceived()
     receiveBuffer.append(socket->readAll());
 
     while (!receiveBuffer.isEmpty()) {
-        
-        // Аудио-пакет
+        // 1. Обработка аудио-пакета
         if (receiveBuffer.startsWith("AUD:")) {
             const int HEADER_SIZE = 4;
             const int AUDIO_CHUNK = 3200;
             const int FULL_SIZE = HEADER_SIZE + AUDIO_CHUNK;
 
-            if (receiveBuffer.size() < FULL_SIZE) break;
+            if (receiveBuffer.size() < FULL_SIZE) {
+                break;
+            }
 
             QByteArray pcmData = receiveBuffer.mid(HEADER_SIZE, AUDIO_CHUNK);
             receiveBuffer.remove(0, FULL_SIZE);
 
-            // Если звук заглушен, просто игнорируем пакет и переходим к следующему
             if (isSpeakerMuted) {
                 continue;
             }
 
-            // Инициализация аудио при первом пакете
             if (!audioSink) {
-                // 1. Пытаемся получить устройство из выбранного в комбобоксе
                 QAudioDevice device;
                 if (speakerDeviceList && speakerDeviceList->currentIndex() >= 0) {
                     int index = speakerDeviceList->currentIndex();
@@ -1019,8 +1109,6 @@ void MainWindow::onServerDataReceived()
                         device = devices[index];
                     }
                 }
-                
-                // 2. Если комбобокс пуст или не выбран, берем системный по умолчанию
                 if (device.isNull()) {
                     device = QMediaDevices::defaultAudioOutput();
                 }
@@ -1031,49 +1119,27 @@ void MainWindow::onServerDataReceived()
                 format.setSampleFormat(QAudioFormat::Int16);
 
                 if (!device.isFormatSupported(format)) {
-                    qDebug() << "⚠️ [АУДИО] Формат 16кГц не поддерживается, используем дефолтный";
                     format = device.preferredFormat();
                 }
 
                 audioSink = new QAudioSink(device, format, this);
+                audioSink->setBufferSize(3200 * 4);
                 audioOutputDevice = audioSink->start();
-                
-                if (!audioOutputDevice) {
-                    qDebug() << "❌ [АУДИО] Не удалось запустить audioOutputDevice!";
-                } else {
-                    qDebug() << "🔊 [АУДИО] Сетевой поток запущен на устройстве:" << device.description();
-                }
             }
 
             if (audioSink && audioOutputDevice) {
                 if (audioSink->state() == QAudio::StoppedState) {
                     audioOutputDevice = audioSink->start();
-                    qDebug() << "🔄 [АУДИО] Устройство перезапущено после остановки";
                 }
-
                 if (audioOutputDevice->isOpen()) {
-                    qint64 written = audioOutputDevice->write(pcmData);
-                    if (written < 0) {
-                        qDebug() << "❌ [АУДИО] Ошибка записи. Сброс устройства...";
-                        audioSink->stop();
-                        delete audioSink;
-                        audioSink = nullptr;
-                        audioOutputDevice = nullptr;
-                    } else if (written != pcmData.size()) {
-                        qDebug() << "⚠️ [АУДИО] Частичная запись:" << written << "из" << pcmData.size();
-                    }
-                } else {
-                    qDebug() << "⚠️ [АУДИО] Устройство закрыто, пробуем открыть...";
-                    audioOutputDevice = audioSink->start();
+                    audioOutputDevice->write(pcmData);
                 }
             }
-            
             continue;
         }
 
-        // JSON-сообщение
+        // 2. Обработка JSON-сообщения
         int jsonStart = receiveBuffer.indexOf('{');
-        
         if (jsonStart < 0) {
             if (receiveBuffer.size() > 10000) {
                 qDebug() << "⚠️ [СЕТЬ] Очистка буфера от мусора";
@@ -1082,13 +1148,17 @@ void MainWindow::onServerDataReceived()
             break;
         }
 
-        if (jsonStart > 0) receiveBuffer.remove(0, jsonStart);
+        if (jsonStart > 0) {
+            receiveBuffer.remove(0, jsonStart);
+        }
 
-        int jsonEnd = receiveBuffer.lastIndexOf('}');
-        if (jsonEnd < 0) break;
+        int newlinePos = receiveBuffer.indexOf('\n');
+        if (newlinePos < 0) {
+            break;
+        }
 
-        QByteArray jsonData = receiveBuffer.left(jsonEnd + 1);
-        receiveBuffer.remove(0, jsonEnd + 1);
+        QByteArray jsonData = receiveBuffer.left(newlinePos);
+        receiveBuffer.remove(0, newlinePos + 1);
 
         QJsonParseError parseError;
         QJsonDocument doc = QJsonDocument::fromJson(jsonData, &parseError);
@@ -1101,9 +1171,22 @@ void MainWindow::onServerDataReceived()
         QJsonObject json = doc.object();
         QString action = json["action"].toString();
 
-        if (action == "LISTENER_JOINED") {
-            addListener(json["clientName"].toString());
-        } 
+        if (action == "SYNC_LISTENERS") {
+            QJsonArray listenersArray = json["listeners"].toArray();
+            
+            for (auto it = listenerWidgets.begin(); it != listenerWidgets.end(); ++it) {
+                listenersListLayout->removeWidget(it.value());
+                it.value()->deleteLater();
+            }
+            listenerWidgets.clear();
+            listenerCount = 0;
+            for (const QJsonValue &val : listenersArray) {
+                addListener(val.toString());
+            }
+            
+            updateListenersCount();
+            qDebug() << "🔄 [СЕТЬ] Список слушателей синхронизирован. Всего:" << listenerCount;
+        }
         else if (action == "JOIN_SUCCESS") {
             if (!json["roomName"].toString().isEmpty()) setPodcastName(json["roomName"].toString());
             if (!json["hostName"].toString().isEmpty()) setHostName(json["hostName"].toString());
@@ -1116,13 +1199,24 @@ void MainWindow::onServerDataReceived()
         } 
         else if (action == "HOST_SPEAKING") {
             bool isSpeaking = json["status"].toBool();
-            if (activeHostTile) {
+            QString senderName = json["senderName"].toString();
+            
+            QFrame *targetTile = nullptr;
+            if (senderName == myName) {
+                targetTile = activeHostTile;
+            } else if (!senderName.isEmpty()) {
+                if (host2Tile && host2Tile->isVisible() && host2NameLabel && host2NameLabel->text() == senderName) {
+                    targetTile = host2Tile;
+                } else if (host1NameLabel && host1NameLabel->text() == senderName) {
+                    targetTile = activeHostTile;
+                }
+            }
+            
+            if (targetTile) {
                 if (isSpeaking) {
-                    activeHostTile->setStyleSheet(
-                        "#hostTile { background-color: #141414; border: 3px solid #50C878; border-radius: 10px; }");
+                    targetTile->setStyleSheet("#hostTile { background-color: #141414; border: 3px solid #50C878; border-radius: 10px; }");
                 } else {
-                    activeHostTile->setStyleSheet(
-                        "#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
+                    targetTile->setStyleSheet("#hostTile { background-color: #141414; border: 3px solid transparent; border-radius: 10px; }");
                 }
             }
         }
@@ -1130,12 +1224,53 @@ void MainWindow::onServerDataReceived()
             ChatMessage msg;
             msg.sender = json["sender"].toString();
             msg.text = json["text"].toString();
-            msg.isLocal = false; // Сообщение пришло от другого участника сети
+            msg.isLocal = false;
             addMessageToChat(msg);
+        }
+        else if (action == "USER_PROMOTED") {
+            QString newName = json["newHostName"].toString();
+            QString oldHostName = json["oldHostName"].toString();
+            
+            qDebug() << "🎙️ [СЕТЬ]" << newName << "стал вторым ведущим вместо" 
+                     << (oldHostName.isEmpty() ? "пустого слота" : oldHostName);
+
+            // новый второй ведущий на плитке
+            if (host2Tile && host2Avatar && host2NameLabel) {
+                host2NameLabel->setText(newName);
+                host2ActualName = newName;
+                if (!newName.trimmed().isEmpty()) {
+                    host2Avatar->setText(QString(newName.trimmed()[0]).toUpper());
+                }
+                host2Tile->setVisible(true);
+            }
+
+            if (newName == myName) {
+                if (micContainerWidget) {
+                    micContainerWidget->setEnabled(true);
+                    micContainerWidget->setToolTip("");
+                    micContainerWidget->setStyleSheet(micContainerWidget->styleSheet().replace(" opacity: 0.5; ", ""));
+                }
+                isHostMode = true;
+                initMicrophone();
+            }
+
+            if (oldHostName == myName) {
+                isHostMode = false;
+                if (micContainerWidget) {
+                    micContainerWidget->setEnabled(false);
+                    micContainerWidget->setToolTip("Микрофон доступен только ведущему");
+                    micContainerWidget->setStyleSheet(micContainerWidget->styleSheet() + " opacity: 0.5; ");
+                }
+                if (audioSource) {
+                    audioSource->stop();
+                    delete audioSource;
+                    audioSource = nullptr;
+                    audioDevice = nullptr;
+                }
+            }
         }
     }
 }
-
 void MainWindow::setMyName(const QString &name)
 {
     myName = name;
