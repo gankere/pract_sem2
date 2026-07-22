@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
+#include <QTcpSocket>
+#include <QJsonObject>
 
 class StartDialog : public QDialog
 {
@@ -25,13 +27,22 @@ signals:
 private slots:
     void onCreateRoomClicked();
     void onJoinRoomClicked();
+    
+    // обработка ответов сервера
+    void onServerResponse();
+    void onConnected();
 
 private:
+    // отправка данных на сервер
+    void sendToServer(const QJsonObject &message);
+    
     QLineEdit *nameEdit;
     QLineEdit *codeEdit;
     QPushButton *createButton;
     QPushButton *joinButton;
     QLabel *errorLabel;
+
+    QTcpSocket *socket;
 
     QString clientName;
     QString roomCode;

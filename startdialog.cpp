@@ -2,6 +2,12 @@
 #include <QVBoxLayout>
 #include <QInputDialog>
 #include <QHBoxLayout>
+#include "mainwindow.h"
+#include <QTcpSocket>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMessageBox>
+#include <QDebug>
 
 StartDialog::StartDialog(QWidget *parent)
     : QDialog(parent), creatorMode(false)
@@ -129,6 +135,21 @@ StartDialog::StartDialog(QWidget *parent)
     errorLabel->setAlignment(Qt::AlignCenter);
     mainLayout->addWidget(errorLabel);
     mainLayout->addStretch(1);
+
+    // Сокет
+    socket = new QTcpSocket(this);
+    connect(socket, &QTcpSocket::readyRead, this, &StartDialog::onServerResponse);
+    connect(socket, &QTcpSocket::connected, this, &StartDialog::onConnected);
+    
+    // Подключение к серверу
+    socket->connectToHost("127.0.0.1", 9999);
+    
+    if (!socket->waitForConnected(3000)) {
+        errorLabel->setText("⚠️ Не удалось подключиться к серверу!");
+        qDebug() << "❌ Ошибка подключения к серверу!";
+    } else {
+        qDebug() << "✅ Подключено к серверу!";
+    }
 }
 
 void StartDialog::onCreateRoomClicked()
@@ -211,7 +232,7 @@ void StartDialog::onCreateRoomClicked()
 
     layout->addLayout(buttonLayout);
 
-    QObject::connect(okButton, &QPushButton::clicked, [&inputDialog, lineEdit]() {
+    QObject::connect(okButton, &QPushButton::clicked, [&inputDialog, &lineEdit]() {
         if (!lineEdit->text().trimmed().isEmpty()) {
             inputDialog.accept();
         }
@@ -227,11 +248,15 @@ void StartDialog::onCreateRoomClicked()
     if (inputDialog.exec() == QDialog::Accepted) {
         QString podcastName = lineEdit->text().trimmed();
         if (!podcastName.isEmpty()) {
-            this->podcastName = podcastName;
             clientName = nameEdit->text().trimmed();
             creatorMode = true;
-            emit createRoomRequested(podcastName);
-            accept();
+            
+            // Запрос на создание комнаты
+            QJsonObject request;
+            request["action"] = "CREATE_ROOM";
+            request["roomName"] = podcastName;
+            request["hostName"] = clientName;
+            sendToServer(request);
         }
     }
 }
@@ -239,7 +264,7 @@ void StartDialog::onCreateRoomClicked()
 void StartDialog::onJoinRoomClicked()
 {
     if (nameEdit->text().trimmed().isEmpty()) {
-        errorLabel->setText("⚠️ Введите ваше имя ⚠️");
+        errorLabel->setText("⚠️ Введите ваше имя ️");
         return;
     }
     if (codeEdit->text().trimmed().isEmpty()) {
@@ -252,6 +277,121 @@ void StartDialog::onJoinRoomClicked()
     roomCode = codeEdit->text().trimmed();
     creatorMode = false;
 
-    emit joinRoomRequested(roomCode, clientName);
-    accept();
+    // Запрос на присоединение
+    QJsonObject request;
+    request["action"] = "JOIN_ROOM";
+    request["roomCode"] = roomCode;
+    request["clientName"] = clientName;
+    sendToServer(request);
+}
+
+void StartDialog::sendToServer(const QJsonObject &message)
+{
+    if (socket && socket->isOpen()) {
+        QJsonDocument doc(message);
+        socket->write(doc.toJson(QJsonDocument::Compact));
+        socket->flush();
+        qDebug() << " Отправлено:" << message;
+    }
+}
+
+void StartDialog::onConnected()
+{
+    qDebug() << "✅ Успешное подключение к серверу!";
+}
+
+void StartDialog::onServerResponse()
+{
+    if (!socket) return;
+    
+    QByteArray data = socket->readAll();
+    
+    QList<QByteArray> messages = data.split('\n');
+    
+    for (const QByteArray &msgData : messages) {
+        if (msgData.isEmpty()) continue;
+        
+        QJsonParseError parseError;
+        QJsonDocument doc = QJsonDocument::fromJson(msgData, &parseError);
+        
+        if (parseError.error != QJsonParseError::NoError) {
+            qDebug() << "⚠️ Ошибка парсинга JSON в StartDialog:" << parseError.errorString();
+            continue;
+        }
+        
+        QJsonObject json = doc.object();
+        QString action = json["action"].toString();
+        qDebug() << "📥 StartDialog Получено:" << json;
+
+        if (action == "SYNC_LISTENERS" || action == "LISTENER_JOINED") {
+            continue; 
+        }
+        
+        if (action == "ROOM_CREATED") {
+            QString code = json["roomCode"].toString();
+            QString name = json["roomName"].toString();
+            
+            MainWindow *mainWindow = new MainWindow(true, nullptr); 
+            mainWindow->setMyName(clientName);
+            mainWindow->setPodcastName(name);
+            mainWindow->setHostName(clientName);
+            mainWindow->setRoomCode(code);
+
+            if (json.contains("startTime")) {
+                mainWindow->setPodcastStartTime(json["startTime"].toVariant().toLongLong());
+            } else {
+                mainWindow->setPodcastStartTime(QDateTime::currentSecsSinceEpoch());
+            }
+
+            mainWindow->attachSocket(socket);
+            socket->setParent(mainWindow);
+            
+            socket = new QTcpSocket(this);
+            connect(socket, &QTcpSocket::readyRead, this, &StartDialog::onServerResponse);
+            connect(socket, &QTcpSocket::connected, this, &StartDialog::onConnected);
+            socket->connectToHost("127.0.0.1", 9999);
+            
+            mainWindow->setWindowTitle("Мини-подкаст: " + name);
+            mainWindow->show();
+            
+            nameEdit->clear();
+            errorLabel->clear();
+        }
+        else if (action == "JOIN_SUCCESS") {
+            QString code = json["roomCode"].toString();
+            QString name = json["roomName"].toString();
+            QString hostName = json["hostName"].toString();
+            
+            MainWindow *mainWindow = new MainWindow(false, nullptr);
+            mainWindow->setMyName(clientName);
+            mainWindow->setPodcastName(name);
+            mainWindow->setHostName(hostName);
+            mainWindow->setRoomCode(code);
+            
+            if (json.contains("startTime")) {
+                mainWindow->setPodcastStartTime(json["startTime"].toVariant().toLongLong());
+            } else {
+                mainWindow->setPodcastStartTime(QDateTime::currentSecsSinceEpoch());
+            }
+
+            mainWindow->attachSocket(socket);
+            socket->setParent(mainWindow);
+        
+            socket = new QTcpSocket(this);
+            connect(socket, &QTcpSocket::readyRead, this, &StartDialog::onServerResponse);
+            connect(socket, &QTcpSocket::connected, this, &StartDialog::onConnected);
+            socket->connectToHost("127.0.0.1", 9999);
+
+            mainWindow->setWindowTitle("Мини-подкаст: " + name);
+            mainWindow->show();
+            
+            nameEdit->clear();
+            codeEdit->clear();
+            errorLabel->clear();
+        }
+        else if (action == "JOIN_FAILED") {
+            QString message = json["message"].toString();
+            errorLabel->setText("⚠️ " + message);
+        }
+    }
 }

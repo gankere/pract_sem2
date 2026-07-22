@@ -17,6 +17,8 @@ add_executable(PodcastUI
     mainwindow.cpp
     startdialog.h
     startdialog.cpp
+    podcastserver.h
+    podcastserver.cpp
 )
 
 target_link_libraries(PodcastUI PRIVATE 
