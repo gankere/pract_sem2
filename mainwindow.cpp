@@ -19,6 +19,7 @@
 #include <QtMath>
 #include <QAudioSink>
 #include <QJsonArray>
+#include <QJsonDocument>
 
 MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHostMode(isHost) 
 {
