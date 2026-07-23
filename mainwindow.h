@@ -147,7 +147,10 @@ private:
     // Состояния заглушения
     bool isMicMuted = false;
     bool isSpeakerMuted = false;
-    
+   
+    // Громкость микрофона (от 0.0 до 1.0)
+    double micVolumeMultiplier = 1.0; 
+
     // Указатели на иконки кнопок для смены эмодзи
     QPushButton *micIconBtn = nullptr;
     QPushButton *speakerIconBtn = nullptr;

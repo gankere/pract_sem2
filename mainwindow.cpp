@@ -536,10 +536,22 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
 
         QObject::connect(volumeSlider, &QSlider::valueChanged,
             [this, isInput](int value) {
+                // 1. Сохраняем настройку
                 settings->setValue(
                     isInput ? "audio/inputVolume" : "audio/outputVolume",
                     value
                 );
+                
+                // 2. Применяем настройку в реальном времени
+                if (isInput) {
+                    // Для микрофона обновляем множитель
+                    micVolumeMultiplier = value / 100.0;
+                } else {
+                    // Для динамика меняем громкость аудиоприемника
+                    if (audioSink) {
+                        audioSink->setVolume(value / 100.0);
+                    }
+                }
             });
 
         auto *menuAction = new QWidgetAction(menu);
@@ -804,6 +816,17 @@ void MainWindow::restartAudioCapture(const QAudioDevice &device)
                     socket->write(QJsonDocument(msg).toJson(QJsonDocument::Compact));
                     socket->flush();
                 }
+            }
+        }
+
+        // === ПРИМЕНЕНИЕ ГРОМКОСТИ МИКРОФОНА ===
+        if (micVolumeMultiplier != 1.0) {
+            qint16 *samples = reinterpret_cast<qint16*>(data.data());
+            int sampleCount = data.size() / sizeof(qint16);
+            
+            for (int i = 0; i < sampleCount; ++i) {
+                double adjustedSample = samples[i] * micVolumeMultiplier;
+                samples[i] = static_cast<qint16>(qBound(-32768.0, adjustedSample, 32767.0));
             }
         }
 
