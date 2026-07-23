@@ -20,6 +20,8 @@
 #include <QAudioSink>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QMessageBox>
+#include <QCloseEvent> 
 
 MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHostMode(isHost) 
 {
@@ -607,6 +609,8 @@ MainWindow::MainWindow(bool isHost, QWidget *parent) : QMainWindow(parent), isHo
     leaveLay->addWidget(leaveBtn, 0, Qt::AlignHCenter);
 
     bottomLay->addWidget(leaveContainer);
+
+    connect(leaveBtn, &QPushButton::clicked, this, &MainWindow::close); //подключение кнопки "Выйти"
 
     root->addWidget(bottomBar);
 
@@ -1293,8 +1297,14 @@ void MainWindow::onServerDataReceived()
                 }
             }
         }
+            else if (action == "ROOM_CLOSED") {
+                QMessageBox::information(this, "Комната закрыта", 
+                                        "Хост покинул комнату. Сессия завершена.");
+                this->close();
+            }
+        }
     }
-}
+
 void MainWindow::setMyName(const QString &name)
 {
     myName = name;
@@ -1388,4 +1398,20 @@ void MainWindow::toggleSpeakerMute()
         }
         qDebug() << "🔊 Звук включен";
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    // Если сокет открыт, отправляем уведомление о выходе
+    if (socket && socket->isOpen()) {
+        QJsonObject msg;
+        msg["action"] = "LEAVE_ROOM";
+        QByteArray data = QJsonDocument(msg).toJson(QJsonDocument::Compact) + "\n";
+        socket->write(data);
+        socket->flush();
+
+        socket->waitForBytesWritten(200);
+    }
+    
+    QMainWindow::closeEvent(event); //стандартное закрытие окна
 }

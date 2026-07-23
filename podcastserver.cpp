@@ -289,10 +289,46 @@ void PodcastServer::onReadyRead()
                     }
                 }
                 
+                
                 QJsonObject syncMsg;
                 syncMsg["action"] = "SYNC_LISTENERS";
                 syncMsg["listeners"] = listenerNames;
                 sendMessage(socket, syncMsg);
+            }
+        }
+                else if (action == "LEAVE_ROOM") {
+            QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
+            if (!clientSocket) return;
+            
+            QString roomCode = socketToRoom.value(clientSocket);
+            if (!roomCode.isEmpty() && rooms.contains(roomCode)) {
+                auto &room = rooms[roomCode];
+                bool wasHost = false;
+                QString clientName;
+                
+                // поиск и удаление слушателя
+                for (int i = 0; i < room.clients.size(); ++i) {
+                    if (room.clients[i].socket == clientSocket) {
+                        wasHost = room.clients[i].isHost;
+                        clientName = room.clients[i].name;
+                        room.clients.removeAt(i);
+                        break;
+                    }
+                }
+                
+                if (wasHost) {
+                    qDebug() << "🚪 [СЕРВЕР] Хост" << clientName << "покинул комнату" << roomCode << ", комната закрывается";
+                    QJsonObject closeMsg;
+                    closeMsg["action"] = "ROOM_CLOSED";
+                    broadcastToRoom(roomCode, closeMsg, nullptr);
+                    rooms.remove(roomCode); // Удаляем комнату
+                } else {
+                    qDebug() << "👋 [СЕРВЕР] Слушатель" << clientName << "покинул комнату" << roomCode;
+                    syncListeners(roomCode); // Обновляем список для остальных
+                }
+                
+                socketToRoom.remove(clientSocket);
+                socketToName.remove(clientSocket);
             }
         }
     }
@@ -330,26 +366,36 @@ void PodcastServer::removeClient(QTcpSocket *socket)
     QString roomCode = socketToRoom[socket];
     QString clientName = socketToName[socket];
     
-    auto &clients = rooms[roomCode].clients;
-    for (int i = 0; i < clients.size(); ++i) {
-        if (clients[i].socket == socket) {
-            bool wasHost = clients[i].isHost;
-            clients.removeAt(i);
-            
-            // Если вышел хост — удаляем всю комнату
-            if (wasHost || clients.isEmpty()) {
-                rooms.remove(roomCode);
-                qDebug() << "🗑️ Удалена комната (вышел хост):" << roomCode;
+    if (rooms.contains(roomCode)) {
+        auto &clients = rooms[roomCode].clients;
+        bool wasHost = false;
+        
+        for (int i = 0; i < clients.size(); ++i) {
+            if (clients[i].socket == socket) {
+                wasHost = clients[i].isHost;
+                clients.removeAt(i);
+                break;
             }
-            break;
+        }
+        
+        if (wasHost) {
+            // Хост отключился внезапно: закрываем комнату и уведомляем всех
+            qDebug() << "⚠️ [СЕРВЕР] Хост" << clientName << "отключился внезапно. Комната" << roomCode << "закрывается.";
+            QJsonObject closeMsg;
+            closeMsg["action"] = "ROOM_CLOSED";
+            broadcastToRoom(roomCode, closeMsg, nullptr);
+            rooms.remove(roomCode);
+        } else {
+            // Слушатель отключился внезапно: просто обновляем список
+            qDebug() << "⚠️ [СЕРВЕР] Слушатель" << clientName << "отключился внезапно.";
+            syncListeners(roomCode);
         }
     }
     
     socketToRoom.remove(socket);
     socketToName.remove(socket);
     
-    qDebug() << "👋 Клиент отключился:" << clientName;
-    syncListeners(roomCode);
+    qDebug() << "🔌 Клиент физически отключился:" << clientName;
 }
 
 void PodcastServer::sendMessage(QTcpSocket *socket, const QJsonObject &message)

@@ -155,7 +155,10 @@ private:
     QPushButton *micIconBtn = nullptr;
     QPushButton *speakerIconBtn = nullptr;
 
-    // Новые методы
+    // Мут
     void toggleMicMute();
     void toggleSpeakerMute();
+    
+protected:
+    void closeEvent(QCloseEvent *event) override; // Перехват закрытия окна
 };
